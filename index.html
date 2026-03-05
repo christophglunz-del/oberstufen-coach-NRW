@@ -1868,6 +1868,9 @@ function renderAuswertung() {
       musik: 'Musik', reli: 'Religion', philo: 'Philosophie', sport: 'Sport'
     };
     html += `<div class="card"><div class="card-title">🗂️ Belegungsprofil</div>`;
+    html += `<div style="font-size:0.75rem;color:var(--text2);margin-bottom:10px;font-family:'DM Mono',monospace">
+      🔴 = Klausurpflicht &nbsp;|&nbsp; 🟡 = Pflicht ohne Klausur &nbsp;|&nbsp; ⚪ = Optional
+    </div>`;
     ['p_fs2','p_schwerpunkt','p_mint2','p_inferd','p_lk1','p_lk2','p_abi3','p_abi4'].forEach(id => {
       const el = document.getElementById(id);
       const val = el ? el.value : '';
