@@ -1867,10 +1867,18 @@ function renderAuswertung() {
       fs_fort: 'Fortgeführte Fremdsprache', kunst: 'Kunst',
       musik: 'Musik', reli: 'Religion', philo: 'Philosophie', sport: 'Sport'
     };
+    // Belegungsplan aus Profil-Tab reproduzieren
+    const awFs2 = document.getElementById('p_fs2')?.value || '';
+    const awSchwerpunkt = document.getElementById('p_schwerpunkt')?.value || '';
+    const awMint2 = document.getElementById('p_mint2')?.value || '';
+    const awInferd = document.getElementById('p_inferd')?.value || '';
+    const awLk1 = document.getElementById('p_lk1')?.value || '';
+    const awLk2 = document.getElementById('p_lk2')?.value || '';
+    const awAb3 = document.getElementById('p_abi3')?.value || '';
+    const awAb4 = document.getElementById('p_abi4')?.value || '';
+
+    // Gewählte Optionen anzeigen
     html += `<div class="card"><div class="card-title">🗂️ Belegungsprofil</div>`;
-    html += `<div style="font-size:0.75rem;color:var(--text2);margin-bottom:10px;font-family:'DM Mono',monospace">
-      🔴 = Klausurpflicht &nbsp;|&nbsp; 🟡 = Pflicht ohne Klausur &nbsp;|&nbsp; ⚪ = Optional
-    </div>`;
     ['p_fs2','p_schwerpunkt','p_mint2','p_inferd','p_lk1','p_lk2','p_abi3','p_abi4'].forEach(id => {
       const el = document.getElementById(id);
       const val = el ? el.value : '';
@@ -1881,25 +1889,66 @@ function renderAuswertung() {
         </div>`;
       }
     });
+    html += `</div>`;
 
-    // AF-Check einbauen (alle 4 Abiturfächer)
-    const lk1 = document.getElementById('p_lk1')?.value || '';
-    const lk2 = document.getElementById('p_lk2')?.value || '';
-    const ab3 = document.getElementById('p_abi3')?.value || '';
-    const ab4 = document.getElementById('p_abi4')?.value || '';
-    const awAbiFaecher = [lk1, lk2, ab3, ab4].filter(Boolean);
+    // Pflichtbelegungen aufbauen (gleiche Logik wie calcProfil)
+    const awPflicht = [];
+    const awEmpf = [];
+    awPflicht.push({ fach: 'Deutsch', ef: '🔴 schriftl.', q: '🔴 schriftl.' });
+    awPflicht.push({ fach: 'Mathematik', ef: '🔴 schriftl.', q: '🔴 schriftl.' });
+    awPflicht.push({ fach: 'Englisch (fortg. FS)', ef: '🔴 schriftl.', q: '🔴 schriftl.' });
+    if (awFs2 === 'ital') awPflicht.push({ fach: 'Italienisch', ef: '🔴 schriftl.', q: '🔴 durchgehend Pflicht!' });
+    if (awFs2 === 'franz') awPflicht.push({ fach: 'Französisch', ef: '🔴 bis Kl.11-Ende', q: awSchwerpunkt === 'sprache' ? '🔴 weiter (Schwerpunkt)' : '🟡 kann abgewählt werden' });
+    if (awFs2 === 'latein') awPflicht.push({ fach: 'Latein', ef: '🟡 bis Kl.11-Ende', q: '⚪ freiwillig (→ Latinum)' });
+    if (awFs2 === 'nein') awPflicht.push({ fach: '⚠️ Neue FS (4-stündig)', ef: '🔴 Pflicht', q: '🔴 bis Abitur' });
+    awPflicht.push({ fach: 'Geschichte oder SoWi', ef: '🔴 mind. 1 davon', q: '🟡 nach Bedarf' });
+    awPflicht.push({ fach: 'Eine Naturwiss. (Bio/Chemie/Physik)', ef: '🔴 schriftl.', q: awSchwerpunkt === 'sprache' ? '🟡 Klausurpflicht entfällt bei 2 FS' : '🔴 schriftl.' });
+    if (awSchwerpunkt === 'mint' && awMint2) {
+      const mintMap = { bio: 'Biologie', chemie: 'Chemie', physik: 'Physik', informatik: 'Informatik' };
+      awPflicht.push({ fach: `2. MINT: ${mintMap[awMint2] || awMint2}`, ef: '🔴 schriftl.', q: '🔴 durchgehend' });
+    }
+    if (awSchwerpunkt === 'sprache') awPflicht.push({ fach: '2. Fremdsprache (Schwerpunkt)', ef: '🔴 schriftl.', q: '🔴 durchgehend' });
+    awPflicht.push({ fach: 'Kunst oder Musik', ef: '🟡', q: '🟡 mind. bis Kl.12-Ende' });
+    awPflicht.push({ fach: 'Religion / Philosophie', ef: '🟡', q: '🟡 mind. bis Kl.12-Ende' });
+    awPflicht.push({ fach: 'Sport', ef: '🟡', q: '🟡 durchgehend' });
+    awPflicht.push({ fach: 'Vertiefung Deutsch (GeSHat)', ef: '🟡 1 HJ', q: '' });
+    awPflicht.push({ fach: 'Vertiefung Mathe (GeSHat)', ef: '🟡 1 HJ', q: '' });
+    if (awInferd === 'erdkunde') awEmpf.push('⚪ Erdkunde als Zusatz wählbar');
+    if (awInferd === 'informatik') awEmpf.push('⚪ Informatik als Zusatz wählbar');
+
+    html += `<div class="card"><div class="card-title">📋 Belegungsplan</div>
+      <div style="font-size:0.75rem;color:var(--text2);margin-bottom:10px;font-family:'DM Mono',monospace">
+        🔴 = Klausurpflicht &nbsp;|&nbsp; 🟡 = Pflicht ohne Klausur &nbsp;|&nbsp; ⚪ = Optional
+      </div>`;
+    awPflicht.forEach(p => {
+      html += `<div class="result-item">
+        <div class="result-text" style="width:100%">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px">
+            <strong>${p.fach}</strong>
+            <div style="display:flex;gap:8px;font-size:0.75rem;font-family:'DM Mono',monospace">
+              ${p.ef ? `<span style="color:var(--text2)">Kl.11: ${p.ef}</span>` : ''}
+              ${p.q ? `<span style="color:var(--accent)">Kl.12/13: ${p.q}</span>` : ''}
+            </div>
+          </div>
+        </div>
+      </div>`;
+    });
+    if (awEmpf.length) {
+      awEmpf.forEach(e => { html += `<div class="tip-row"><span class="tip-icon">➕</span><span style="color:var(--green)">${e}</span></div>`; });
+    }
+    html += `</div>`;
+
+    // AF-Check (alle 4 Abiturfächer)
+    const awAbiFaecher = [awLk1, awLk2, awAb3, awAb4].filter(Boolean);
     const afI = awAbiFaecher.some(f => ['deutsch','englisch','fs_fort'].includes(f));
     const afII = awAbiFaecher.some(f => ['geschichte','sowi','erdkunde','philo'].includes(f));
     const afIII = awAbiFaecher.some(f => ['mathe','bio','chemie','physik','informatik'].includes(f));
-    html += `<div style="margin-top:12px;font-size:0.82rem">
-      <strong style="color:var(--text)">Aufgabenfeld-Check (Abitur):</strong>
-      <div style="margin-top:6px">
-        <div style="padding:3px 0">${afI ? '✅' : '❌'} <strong>Sprache/Kunst</strong>: ${afI ? 'abgedeckt' : 'Deutsch oder Fremdsprache fehlt!'}</div>
-        <div style="padding:3px 0">${afII ? '✅' : '❌'} <strong>Gesellschaftswiss.</strong>: ${afII ? 'abgedeckt' : 'Ge, SoWi, Erdkunde oder Philo fehlt!'}</div>
-        <div style="padding:3px 0">${afIII ? '✅' : '❌'} <strong>Mathe/Naturwiss.</strong>: ${afIII ? 'abgedeckt' : 'Mathe, Bio, Chemie oder Physik fehlt!'}</div>
-      </div>
+    html += `<div class="card"><div class="card-title">🎯 Aufgabenfeld-Check (Abitur)</div>
+      <div class="tip-row"><span class="tip-icon">${afI ? '✅' : '❌'}</span><span><strong>Sprache/Kunst</strong>: ${afI ? 'abgedeckt' : 'Deutsch oder Fremdsprache fehlt!'}</span></div>
+      <div class="tip-row"><span class="tip-icon">${afII ? '✅' : '❌'}</span><span><strong>Gesellschaftswiss.</strong>: ${afII ? 'abgedeckt' : 'Ge, SoWi, Erdkunde oder Philo fehlt!'}</span></div>
+      <div class="tip-row"><span class="tip-icon">${afIII ? '✅' : '❌'}</span><span><strong>Mathe/Naturwiss.</strong>: ${afIII ? 'abgedeckt' : 'Mathe, Bio, Chemie oder Physik fehlt!'}</span></div>
+      ${awAbiFaecher.length < 4 ? '<div style="font-size:0.78rem;color:var(--text2);margin-top:8px">Noch nicht alle 4 Abiturfächer gewählt.</div>' : ''}
     </div>`;
-    html += `</div>`;
   } else {
     html += `<div class="card" style="opacity:0.5"><div class="card-title">🗂️ Belegungsprofil</div><div style="color:var(--text2);font-size:0.85rem">Noch keine Angaben — zuerst den Tab „Belegung" ausfüllen.</div></div>`;
   }
