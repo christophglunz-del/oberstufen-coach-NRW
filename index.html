@@ -46,14 +46,18 @@ html, body {
 
 /* HEADER */
 .header {
-  padding: 16px 20px 12px;
-  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px 10px;
+  display: flex; flex-direction: column; gap: 2px;
   border-bottom: 1px solid var(--border);
   background: var(--bg);
   position: sticky; top: 0; z-index: 100;
 }
+.header-top { display: flex; align-items: center; justify-content: space-between; }
+.header-btns { display: flex; align-items: center; gap: 6px; }
 .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.15rem; letter-spacing: -0.02em; }
 .logo span { color: var(--gold); }
+.logo-nrw { font-family: 'DM Mono', monospace; font-weight: 500; font-size: 0.85rem; color: var(--text2); letter-spacing: 0.03em; }
+.logo-school { font-family: 'DM Mono', monospace; font-weight: 500; font-size: 0.8rem; color: var(--gold); letter-spacing: 0.05em; }
 .reset-btn {
   width: 34px; height: 34px; border-radius: 50%;
   background: var(--bg3); border: 1px solid var(--border);
@@ -449,13 +453,16 @@ html, body {
 <body>
 <div id="app">
   <header class="header">
-    <div class="logo">Ober<span>Stufen</span>Coach <span style="font-size:0.7rem;color:var(--text2);font-family:'DM Mono',monospace;font-weight:400;">NRW</span><div style="font-size:0.65rem;color:var(--gold);font-family:'DM Mono',monospace;font-weight:500;letter-spacing:0.05em;margin-top:1px">Gesamtschule Hattingen</div></div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <button class="reset-btn" id="shareBtn" title="App teilen">🔗</button>
-      <a href="mailto:christoph@glunz.org?subject=OberStufenCoach%20NRW%20—%20Verbesserungsvorschlag" class="reset-btn" title="Verbesserungsvorschlag senden" style="text-decoration:none;font-size:1rem">💡</a>
-      <a href="https://ko-fi.com/kriglu" target="_blank" rel="noopener" class="reset-btn" title="Projekt unterstützen" style="text-decoration:none;font-size:1rem">☕</a>
-      <button class="reset-btn" id="resetBtn" title="Alle Eingaben löschen">↺</button>
+    <div class="header-top">
+      <div class="logo">Ober<span>Stufen</span>Coach <span class="logo-nrw">NRW</span></div>
+      <div class="header-btns">
+        <button class="reset-btn" id="shareBtn" title="App teilen">🔗</button>
+        <a href="mailto:christoph@glunz.org?subject=OberStufenCoach%20NRW%20—%20Verbesserungsvorschlag" class="reset-btn" title="Verbesserungsvorschlag senden" style="text-decoration:none;font-size:1rem">💡</a>
+        <a href="https://ko-fi.com/kriglu" target="_blank" rel="noopener" class="reset-btn" title="Projekt unterstützen" style="text-decoration:none;font-size:1rem">☕</a>
+        <button class="reset-btn" id="resetBtn" title="Alle Eingaben löschen">↺</button>
+      </div>
     </div>
+    <div class="logo-school">Gesamtschule Hattingen</div>
   </header>
 
   <div class="nav-wrap" id="navWrap">
