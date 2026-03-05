@@ -2041,8 +2041,13 @@ document.getElementById('shareBtn').addEventListener('click', async () => {
   if (navigator.share) {
     try { await navigator.share(data); } catch(e) { /* abgebrochen */ }
   } else {
-    await navigator.clipboard.writeText(url);
-    showToast('📋 Link kopiert!');
+    try {
+      await navigator.clipboard.writeText(url);
+      showToast('📋 Link kopiert!');
+    } catch(e) {
+      // Fallback: prompt mit URL zum manuellen Kopieren
+      prompt('Link kopieren:', url);
+    }
   }
 });
 
