@@ -439,10 +439,8 @@ html, body {
   </header>
 
   <nav class="nav">
-    <button class="nav-btn active" id="nav-chat">💬 Chat</button>
+    <button class="nav-btn active" id="nav-chat">💬 Info</button>
     <button class="nav-btn" id="nav-faecher">📚 Fächer</button>
-    <button class="nav-btn" id="nav-klausur">📅 Klausuren</button>
-    <button class="nav-btn" id="nav-rechner">🧮 Notenrechner</button>
     <button class="nav-btn" id="nav-profil">🗂️ Belegung</button>
     <button class="nav-btn" id="nav-auswertung">🖨️ Auswertung</button>
     <button class="nav-btn" id="nav-quellen">📎 Quellen</button>
@@ -484,149 +482,6 @@ html, body {
       </div>
       <div class="step-indicator" id="stepIndicator"></div>
       <div id="faecherContent"></div>
-    </div>
-
-    <!-- ===== KLAUSUREN ===== -->
-    <div class="section" id="section-klausur">
-      <div class="section-head">
-        <h2>Klausurplan</h2>
-        <p>Alle Klausurpflichten auf einen Blick — nach Halbjahr.</p>
-      </div>
-      <div class="half-selector">
-        <button class="half-btn active"  id="kbtn-EF1">EF.1</button>
-        <button class="half-btn"  id="kbtn-EF2">EF.2</button>
-        <button class="half-btn"  id="kbtn-Q1">Q1</button>
-        <button class="half-btn"  id="kbtn-Q2">Q2</button>
-      </div>
-      <div class="kl-legend">
-        <div class="kl-legend-item"><div class="kl-dot" style="background:var(--red)"></div> Pflicht</div>
-        <div class="kl-legend-item"><div class="kl-dot" style="background:var(--green)"></div> Optional möglich</div>
-      </div>
-      <div id="klausurContent"></div>
-      <div class="card mt-12">
-        <div class="card-title">⚠️ Wichtige Regeln</div>
-        <div class="tip-row">
-          <span class="tip-icon">🔒</span>
-          <span>Fächer die du im Abitur schreiben willst, <strong>müssen spätestens ab Q1</strong> als Klausurfächer geführt werden.</span>
-        </div>
-        <div class="tip-row">
-          <span class="tip-icon">📊</span>
-          <span>In EF.2 gibt es <strong>zentrale Klausuren</strong> in Deutsch (1. Juni) und Mathe (4. Juni) — landesweit einheitlich.</span>
-        </div>
-        <div class="tip-row">
-          <span class="tip-icon">🗣️</span>
-          <span>In <strong>modernen Fremdsprachen</strong> wird in einem Q-Halbjahr eine Klausur durch eine mündliche Prüfung ersetzt.</span>
-        </div>
-        <div class="tip-row">
-          <span class="tip-icon">📝</span>
-          <span>Max. <strong>3 Klausuren pro Woche</strong>, max. 1 pro Tag.</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== RECHNER ===== -->
-    <div class="section" id="section-rechner">
-      <div class="section-head">
-        <h2>Abiturnoten-<br>rechner</h2>
-        <p>Berechne deine voraussichtliche Abiturnote.</p>
-      </div>
-
-      <div class="calc-section">
-        <div class="calc-title">
-          📘 Block I — Qualifikationsphase
-          <div class="info-toggle" id="toggleBlock1Btn">
-            <svg width="12" height="12" viewBox="0 0 12 12"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
-            Formel
-          </div>
-        </div>
-        <div class="info-content" id="info-block1">
-          <strong>Formel:</strong> E(I) = (P ÷ S) × 40<br>
-          P = Punktsumme (LK doppelt), S = Kurszahl (LK doppelt)<br>
-          Ergebnis: 200–600 Punkte. Minimum: 200 Punkte.
-        </div>
-        <div class="calc-grid">
-          <div class="input-group">
-            <label class="input-label">LK-Punkte ∑ (8 Kurse)</label>
-            <input type="number" class="score-input" id="lkPts" min="0" max="120" placeholder="0–120" oninput="calcAbi()"/>
-          </div>
-          <div class="input-group">
-            <label class="input-label">GK-Punkte ∑ (27–32)</label>
-            <input type="number" class="score-input" id="gkPts" min="0" max="450" placeholder="0–450" oninput="calcAbi()"/>
-          </div>
-          <div class="input-group">
-            <label class="input-label">Anz. GK-Kurse</label>
-            <input type="number" class="score-input" id="gkAnz" min="27" max="32" placeholder="27–32" value="32" oninput="calcAbi()"/>
-          </div>
-        </div>
-      </div>
-
-      <div class="calc-section">
-        <div class="calc-title">📗 Block II — Abiturprüfung</div>
-        <p class="text-muted" style="margin-bottom:10px;">Punkte je Fach (0–15), ohne besondere Lernleistung:</p>
-        <div class="calc-grid">
-          <div class="input-group">
-            <label class="input-label">1. LK (schriftl.)</label>
-            <input type="number" class="score-input" id="ab1" min="0" max="15" placeholder="0–15" oninput="calcAbi()"/>
-          </div>
-          <div class="input-group">
-            <label class="input-label">2. LK (schriftl.)</label>
-            <input type="number" class="score-input" id="ab2" min="0" max="15" placeholder="0–15" oninput="calcAbi()"/>
-          </div>
-          <div class="input-group">
-            <label class="input-label">3. Fach (schriftl.)</label>
-            <input type="number" class="score-input" id="ab3" min="0" max="15" placeholder="0–15" oninput="calcAbi()"/>
-          </div>
-          <div class="input-group">
-            <label class="input-label">4. Fach (mündl.)</label>
-            <input type="number" class="score-input" id="ab4" min="0" max="15" placeholder="0–15" oninput="calcAbi()"/>
-          </div>
-        </div>
-        <div style="margin-top:10px;font-size:0.78rem" class="text-muted">
-          ⚡ Mind. 2 Fächer (darunter 1 LK) ≥ 25 Punkte (= Note 5 × 5 Pkt.)
-        </div>
-      </div>
-
-      <div id="calcResult" style="display:none">
-        <div class="block-row">
-          <div class="block-card">
-            <div class="block-pts" id="block1Pts">—</div>
-            <div class="block-label">Block I</div>
-          </div>
-          <div class="block-card">
-            <div class="block-pts" id="block2Pts">—</div>
-            <div class="block-label">Block II</div>
-          </div>
-        </div>
-        <div class="result-display">
-          <div class="result-big" id="abiNote">—</div>
-          <div class="result-label">Voraussichtliche Abiturdurchschnittsnote</div>
-          <div class="result-bar-wrap">
-            <div class="result-bar" id="abiBar" style="width:0%"></div>
-          </div>
-          <div class="result-sub"><span>4,0</span><span>1,0</span></div>
-          <div id="abiWarnings" style="margin-top:12px; font-size:0.83rem; text-align:left;"></div>
-        </div>
-      </div>
-
-      <div class="card mt-12">
-        <div class="card-title">📊 Schnell-Orientierung</div>
-        <div class="tip-row">
-          <span class="tip-icon">🏆</span>
-          <span>Note <strong>1,0</strong> = mind. 823 Gesamtpunkte</span>
-        </div>
-        <div class="tip-row">
-          <span class="tip-icon">✅</span>
-          <span>Bestanden ab <strong>300 Punkten</strong> (min. 200 in Block I + 100 in Block II)</span>
-        </div>
-        <div class="tip-row">
-          <span class="tip-icon">⚡</span>
-          <span>Block I macht <strong>2/3</strong>, Block II <strong>1/3</strong> der Gesamtnote aus</span>
-        </div>
-        <div class="tip-row">
-          <span class="tip-icon">⚠️</span>
-          <span>4 Punkte (schwach ausreichend) = <strong>Defizit</strong> — max. 7–8 erlaubt</span>
-        </div>
-      </div>
     </div>
 
     <!-- ===== BELEGUNGSPLAN ===== -->
@@ -703,6 +558,123 @@ html, body {
         Diese App ersetzt keine individuelle Beratung.<br>
         Bei Fragen wende dich an deine Oberstufenkoordination.<br><br>
         <a href="https://ko-fi.com/kriglu" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none">Dieses Projekt unterstützen auf Ko-fi</a>
+      </div>
+
+      <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border)">
+        <div style="text-align:center;font-size:0.82rem;color:var(--text2);margin-bottom:14px;font-weight:600;letter-spacing:0.5px">🧰 WERKZEUGE</div>
+      </div>
+
+      <!-- Klausurplan -->
+      <div class="card">
+        <div class="card-title">📅 Klausurplan</div>
+        <p class="text-muted" style="font-size:0.82rem;margin-bottom:10px">Alle Klausurpflichten auf einen Blick — nach Halbjahr.</p>
+        <div class="half-selector">
+          <button class="half-btn active" id="kbtn-EF1">EF.1</button>
+          <button class="half-btn" id="kbtn-EF2">EF.2</button>
+          <button class="half-btn" id="kbtn-Q1">Q1</button>
+          <button class="half-btn" id="kbtn-Q2">Q2</button>
+        </div>
+        <div class="kl-legend">
+          <div class="kl-legend-item"><div class="kl-dot" style="background:var(--red)"></div> Pflicht</div>
+          <div class="kl-legend-item"><div class="kl-dot" style="background:var(--green)"></div> Optional möglich</div>
+        </div>
+        <div id="klausurContent"></div>
+        <div style="margin-top:12px;font-size:0.82rem;color:var(--text2);line-height:1.6">
+          🔒 Abiturfächer <strong>müssen ab Q1</strong> Klausurfächer sein.<br>
+          📊 EF.2: <strong>Zentrale Klausuren</strong> in Deutsch + Mathe.<br>
+          🗣️ In Fremdsprachen wird eine Q-Klausur durch mündl. Prüfung ersetzt.<br>
+          📝 Max. <strong>3 Klausuren/Woche</strong>, max. 1/Tag.
+        </div>
+      </div>
+
+      <!-- Notenrechner -->
+      <div class="card">
+        <div class="card-title">🧮 Abiturnotenrechner</div>
+        <p class="text-muted" style="font-size:0.82rem;margin-bottom:10px">Berechne deine voraussichtliche Abiturnote.</p>
+
+        <div class="calc-section">
+          <div class="calc-title">
+            📘 Block I — Qualifikationsphase
+            <div class="info-toggle" id="toggleBlock1Btn">
+              <svg width="12" height="12" viewBox="0 0 12 12"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+              Formel
+            </div>
+          </div>
+          <div class="info-content" id="info-block1">
+            <strong>Formel:</strong> E(I) = (P ÷ S) × 40<br>
+            P = Punktsumme (LK doppelt), S = Kurszahl (LK doppelt)<br>
+            Ergebnis: 200–600 Punkte. Minimum: 200 Punkte.
+          </div>
+          <div class="calc-grid">
+            <div class="input-group">
+              <label class="input-label">LK-Punkte ∑ (8 Kurse)</label>
+              <input type="number" class="score-input" id="lkPts" min="0" max="120" placeholder="0–120" oninput="calcAbi()"/>
+            </div>
+            <div class="input-group">
+              <label class="input-label">GK-Punkte ∑ (27–32)</label>
+              <input type="number" class="score-input" id="gkPts" min="0" max="450" placeholder="0–450" oninput="calcAbi()"/>
+            </div>
+            <div class="input-group">
+              <label class="input-label">Anz. GK-Kurse</label>
+              <input type="number" class="score-input" id="gkAnz" min="27" max="32" placeholder="27–32" value="32" oninput="calcAbi()"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="calc-section">
+          <div class="calc-title">📗 Block II — Abiturprüfung</div>
+          <p class="text-muted" style="margin-bottom:10px;">Punkte je Fach (0–15), ohne besondere Lernleistung:</p>
+          <div class="calc-grid">
+            <div class="input-group">
+              <label class="input-label">1. LK (schriftl.)</label>
+              <input type="number" class="score-input" id="ab1" min="0" max="15" placeholder="0–15" oninput="calcAbi()"/>
+            </div>
+            <div class="input-group">
+              <label class="input-label">2. LK (schriftl.)</label>
+              <input type="number" class="score-input" id="ab2" min="0" max="15" placeholder="0–15" oninput="calcAbi()"/>
+            </div>
+            <div class="input-group">
+              <label class="input-label">3. Fach (schriftl.)</label>
+              <input type="number" class="score-input" id="ab3" min="0" max="15" placeholder="0–15" oninput="calcAbi()"/>
+            </div>
+            <div class="input-group">
+              <label class="input-label">4. Fach (mündl.)</label>
+              <input type="number" class="score-input" id="ab4" min="0" max="15" placeholder="0–15" oninput="calcAbi()"/>
+            </div>
+          </div>
+          <div style="margin-top:10px;font-size:0.78rem" class="text-muted">
+            ⚡ Mind. 2 Fächer (darunter 1 LK) ≥ 25 Punkte (= Note 5 × 5 Pkt.)
+          </div>
+        </div>
+
+        <div id="calcResult" style="display:none">
+          <div class="block-row">
+            <div class="block-card">
+              <div class="block-pts" id="block1Pts">—</div>
+              <div class="block-label">Block I</div>
+            </div>
+            <div class="block-card">
+              <div class="block-pts" id="block2Pts">—</div>
+              <div class="block-label">Block II</div>
+            </div>
+          </div>
+          <div class="result-display">
+            <div class="result-big" id="abiNote">—</div>
+            <div class="result-label">Voraussichtliche Abiturdurchschnittsnote</div>
+            <div class="result-bar-wrap">
+              <div class="result-bar" id="abiBar" style="width:0%"></div>
+            </div>
+            <div class="result-sub"><span>4,0</span><span>1,0</span></div>
+            <div id="abiWarnings" style="margin-top:12px; font-size:0.83rem; text-align:left;"></div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;font-size:0.82rem;color:var(--text2);line-height:1.6">
+          🏆 Note <strong>1,0</strong> = mind. 823 Gesamtpunkte<br>
+          ✅ Bestanden ab <strong>300 Punkten</strong> (min. 200 Block I + 100 Block II)<br>
+          ⚡ Block I = <strong>2/3</strong>, Block II = <strong>1/3</strong> der Gesamtnote<br>
+          ⚠️ 4 Punkte = <strong>Defizit</strong> — max. 7–8 erlaubt
+        </div>
       </div>
     </div>
 
@@ -1616,7 +1588,7 @@ addMsg(`<strong>Hallo! 👋</strong><br>
   <span class="tag" data-chip="Was ist die Fachhochschulreife?">FHR</span>`, 'bot');
 
 // Nav-Buttons per EventListener
-[['nav-chat','chat'],['nav-faecher','faecher'],['nav-klausur','klausur'],['nav-rechner','rechner'],['nav-profil','profil'],['nav-auswertung','auswertung'],['nav-quellen','quellen']].forEach(([id,sec]) => {
+[['nav-chat','chat'],['nav-faecher','faecher'],['nav-profil','profil'],['nav-auswertung','auswertung'],['nav-quellen','quellen']].forEach(([id,sec]) => {
   const btn = document.getElementById(id);
   if (btn) btn.addEventListener('click', () => showSection(sec));
 });
