@@ -2,7 +2,7 @@
   "name": "OberStufenCoach NRW",
   "short_name": "OSCoach",
   "description": "Dein persönlicher Begleiter für die gymnasiale Oberstufe in NRW",
-  "start_url": "/",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#0f1117",
   "theme_color": "#e8c547",

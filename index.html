@@ -502,7 +502,7 @@ html, body {
       <div class="calc-section">
         <div class="calc-title">
           📘 Block I — Qualifikationsphase
-          <div class="info-toggle" id="toggleBlock1" id="toggleBlock1Btn">
+          <div class="info-toggle" id="toggleBlock1Btn">
             <svg width="12" height="12" viewBox="0 0 12 12"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
             Formel
           </div>
@@ -549,7 +549,7 @@ html, body {
             <input type="number" class="score-input" id="ab4" min="0" max="15" placeholder="0–15" oninput="calcAbi()"/>
           </div>
         </div>
-        <div style="margin-top:10px" class="text-muted" style="font-size:0.78rem">
+        <div style="margin-top:10px;font-size:0.78rem" class="text-muted">
           ⚡ Mind. 2 Fächer (darunter 1 LK) ≥ 25 Punkte (= Note 5 × 5 Pkt.)
         </div>
       </div>
@@ -607,6 +607,7 @@ html, body {
 
 <div class="toast" id="toast"></div>
 
+<script>
 // ============================================================
 // NAVIGATION
 // ============================================================
@@ -634,9 +635,10 @@ function showToast(msg) {
 // ============================================================
 function toggleInfo(id) {
   const content = document.getElementById('info-' + id);
-  const toggle = document.getElementById('toggle' + id.charAt(0).toUpperCase() + id.slice(1));
+  const toggleId = 'toggle' + id.charAt(0).toUpperCase() + id.slice(1);
+  const toggle = document.getElementById(toggleId) || document.getElementById(toggleId + 'Btn');
   content.classList.toggle('show');
-  toggle.classList.toggle('open');
+  if (toggle) toggle.classList.toggle('open');
 }
 
 // ============================================================
