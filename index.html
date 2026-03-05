@@ -64,6 +64,15 @@ html, body {
 .reset-btn:hover { border-color: var(--red); color: var(--red); background: rgba(232,91,91,0.1); }
 
 /* NAV */
+.nav-wrap {
+  position: relative;
+}
+.nav-wrap::after {
+  content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 32px;
+  background: linear-gradient(to right, transparent, var(--bg2));
+  pointer-events: none; transition: opacity 0.3s; z-index: 1;
+}
+.nav-wrap.scrolled-end::after { opacity: 0; }
 .nav {
   display: flex; gap: 4px;
   padding: 10px 12px;
@@ -438,14 +447,16 @@ html, body {
     </div>
   </header>
 
-  <nav class="nav">
-    <button class="nav-btn active" id="nav-chat">💬 Chat</button>
-    <button class="nav-btn" id="nav-faecher">📚 Fächer</button>
-    <button class="nav-btn" id="nav-profil">🗂️ Belegung</button>
-    <button class="nav-btn" id="nav-auswertung">🖨️ Auswertung</button>
-    <button class="nav-btn" id="nav-werkzeuge">🧰 Werkzeuge</button>
-    <button class="nav-btn" id="nav-quellen">📎 Quellen</button>
-  </nav>
+  <div class="nav-wrap" id="navWrap">
+    <nav class="nav" id="navBar">
+      <button class="nav-btn active" id="nav-chat">💬 Chat</button>
+      <button class="nav-btn" id="nav-faecher">📚 Fächer</button>
+      <button class="nav-btn" id="nav-profil">🗂️ Belegung</button>
+      <button class="nav-btn" id="nav-auswertung">🖨️ Auswertung</button>
+      <button class="nav-btn" id="nav-werkzeuge">🧰 Werkzeuge</button>
+      <button class="nav-btn" id="nav-quellen">📎 Quellen</button>
+    </nav>
+  </div>
 
   <div class="content">
 
@@ -1610,10 +1621,23 @@ addMsg(`<strong>Hallo! 👋</strong><br>
   <span class="tag" data-chip="Wie wird die Abiturnote berechnet?">Abiturnote</span>
   <span class="tag" data-chip="Was ist die Fachhochschulreife?">FHR</span>`, 'bot');
 
+// Nav scroll fade
+const navBar = document.getElementById('navBar');
+const navWrap = document.getElementById('navWrap');
+function checkNavScroll() {
+  const atEnd = navBar.scrollLeft + navBar.clientWidth >= navBar.scrollWidth - 4;
+  navWrap.classList.toggle('scrolled-end', atEnd);
+}
+navBar.addEventListener('scroll', checkNavScroll);
+checkNavScroll();
+
 // Nav-Buttons per EventListener
 [['nav-chat','chat'],['nav-faecher','faecher'],['nav-profil','profil'],['nav-auswertung','auswertung'],['nav-werkzeuge','werkzeuge'],['nav-quellen','quellen']].forEach(([id,sec]) => {
   const btn = document.getElementById(id);
-  if (btn) btn.addEventListener('click', () => showSection(sec));
+  if (btn) btn.addEventListener('click', () => {
+    showSection(sec);
+    btn.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
+  });
 });
 // Quick-Chips per EventListener
 document.querySelectorAll('.chip[data-chip]').forEach(el => {
