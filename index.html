@@ -438,7 +438,7 @@ html, body {
           <div class="chat-input-row">
             <textarea class="chat-input" id="chatInput" placeholder="Deine Frage zur Oberstufe..." rows="1"
               onkeydown="handleKey(event)"></textarea>
-            <button class="send-btn" onclick="sendMessage()">➤</button>
+            <button class="send-btn" id="sendBtn">➤</button>
           </div>
         </div>
       </div>
@@ -461,10 +461,10 @@ html, body {
         <p>Alle Klausurpflichten auf einen Blick — nach Halbjahr.</p>
       </div>
       <div class="half-selector">
-        <button class="half-btn active" onclick="showKlausur('EF1')" id="kbtn-EF1">EF.1</button>
-        <button class="half-btn" onclick="showKlausur('EF2')" id="kbtn-EF2">EF.2</button>
-        <button class="half-btn" onclick="showKlausur('Q1')" id="kbtn-Q1">Q1</button>
-        <button class="half-btn" onclick="showKlausur('Q2')" id="kbtn-Q2">Q2</button>
+        <button class="half-btn active"  id="kbtn-EF1">EF.1</button>
+        <button class="half-btn"  id="kbtn-EF2">EF.2</button>
+        <button class="half-btn"  id="kbtn-Q1">Q1</button>
+        <button class="half-btn"  id="kbtn-Q2">Q2</button>
       </div>
       <div class="kl-legend">
         <div class="kl-legend-item"><div class="kl-dot" style="background:var(--red)"></div> Pflicht</div>
@@ -502,7 +502,7 @@ html, body {
       <div class="calc-section">
         <div class="calc-title">
           📘 Block I — Qualifikationsphase
-          <div class="info-toggle" id="toggleBlock1" onclick="toggleInfo('block1')">
+          <div class="info-toggle" id="toggleBlock1" id="toggleBlock1Btn">
             <svg width="12" height="12" viewBox="0 0 12 12"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
             Formel
           </div>
@@ -1520,6 +1520,21 @@ addMsg(`<strong>Hallo! 👋</strong><br>
 document.querySelectorAll('.chip[data-chip]').forEach(el => {
   el.addEventListener('click', () => sendChip(el.getAttribute('data-chip')));
 });
+
+// Send-Button
+const sendBtn = document.getElementById('sendBtn');
+if (sendBtn) sendBtn.addEventListener('click', sendMessage);
+
+// Klausur-Halbjahr-Buttons
+[['kbtn-EF1','EF1'],['kbtn-EF2','EF2'],['kbtn-Q1','Q1'],['kbtn-Q2','Q2']].forEach(([id,hj]) => {
+  const btn = document.getElementById(id);
+  if (btn) btn.addEventListener('click', () => showKlausur(hj));
+});
+
+// toggleInfo Block1
+const t1 = document.getElementById('toggleBlock1Btn');
+if (t1) t1.addEventListener('click', () => toggleInfo('block1'));
+
 </script>
 
 </body>
