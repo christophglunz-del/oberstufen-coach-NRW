@@ -126,9 +126,9 @@ html, body {
   margin-bottom: 20px;
 }
 .section-head h2 {
-  font-family: 'Syne', sans-serif; font-weight: 800;
-  font-size: 1.5rem; letter-spacing: -0.03em;
-  line-height: 1.35; margin-bottom: 4px;
+  font-family: 'Instrument Sans', sans-serif; font-weight: 700;
+  font-size: 1.5rem; letter-spacing: -0.02em;
+  line-height: 1.3; margin-bottom: 4px;
 }
 .section-head p { color: var(--text2); font-size: 0.87rem; }
 .print-qr-header { display: none; }
@@ -418,12 +418,15 @@ html, body {
   .action-btn, .toast, .section-head p { display: none !important; }
   .section { display: none !important; }
   #section-auswertung { display: block !important; }
-  #section-auswertung .section-head { display: block !important; }
-  #section-auswertung .section-head h2 { font-size: 16pt; color: #000; }
-  .aw-head { display: flex !important; justify-content: space-between; align-items: flex-start; }
-  .print-qr-header { display: flex !important; gap: 12px; align-items: flex-start; flex-shrink: 0; }
+  #section-auswertung .section-head { display: flex !important; }
+  .aw-head { display: flex !important; align-items: center; gap: 10px; }
+  .aw-head .aw-logo { width: 40px; height: 40px; flex-shrink: 0; }
+  .aw-head .aw-title-block { flex: 1; min-width: 0; }
+  .aw-head .aw-title-block p { display: none !important; }
+  .aw-head h2 { font-size: 14pt !important; color: #000; white-space: nowrap; }
+  .print-qr-header { display: flex !important; gap: 10px; align-items: center; flex-shrink: 0; }
   .print-qr-header .pqr-item { text-align: center; }
-  .print-qr-header .pqr-item svg { width: 56px; height: 56px; }
+  .print-qr-header .pqr-item svg { width: 50px; height: 50px; }
   .print-qr-header .pqr-label { font-size: 5.5pt; color: #666; margin-top: 2px; line-height: 1.3; }
   .card { background: #fff; border: 1px solid #999; page-break-inside: avoid; }
   .card-title { color: #000 !important; }
@@ -448,7 +451,8 @@ html, body {
   <header class="header">
     <div class="logo">Ober<span>Stufen</span>Coach <span style="font-size:0.7rem;color:var(--text2);font-family:'DM Mono',monospace;font-weight:400;">NRW</span><div style="font-size:0.65rem;color:var(--gold);font-family:'DM Mono',monospace;font-weight:500;letter-spacing:0.05em;margin-top:1px">Gesamtschule Hattingen</div></div>
     <div style="display:flex;align-items:center;gap:8px">
-      <button class="reset-btn" id="shareBtn" title="App teilen">📤</button>
+      <button class="reset-btn" id="shareBtn" title="App teilen">🔗</button>
+      <a href="mailto:christoph@glunz.org?subject=OberStufenCoach%20NRW%20—%20Verbesserungsvorschlag" class="reset-btn" title="Verbesserungsvorschlag senden" style="text-decoration:none;font-size:1rem">💡</a>
       <a href="https://ko-fi.com/kriglu" target="_blank" rel="noopener" class="reset-btn" title="Projekt unterstützen" style="text-decoration:none;font-size:1rem">☕</a>
       <button class="reset-btn" id="resetBtn" title="Alle Eingaben löschen">↺</button>
     </div>
@@ -511,21 +515,19 @@ html, body {
     <!-- ===== AUSWERTUNG ===== -->
     <div class="section" id="section-auswertung">
       <div class="section-head aw-head">
-        <div style="display:flex;align-items:center;gap:14px">
-          <svg class="aw-logo" viewBox="0 0 80 80" style="width:52px;height:52px;flex-shrink:0">
-            <rect width="80" height="80" rx="18" fill="#0f1117"/>
-            <polygon points="40,18 68,32 40,38 12,32" fill="#e8c547"/>
-            <polygon points="40,38 68,32 68,35 40,41 12,35 12,32" fill="#c4a633"/>
-            <line x1="40" y1="38" x2="40" y2="54" stroke="#e8c547" stroke-width="2.5"/>
-            <path d="M30,44 Q30,56 40,56 Q50,56 50,44" fill="none" stroke="#5b8dee" stroke-width="2.5" stroke-linecap="round"/>
-            <circle cx="40" cy="56" r="2" fill="#5b8dee"/>
-            <line x1="62" y1="32" x2="62" y2="52" stroke="#e8c547" stroke-width="2"/>
-            <circle cx="62" cy="53" r="2.5" fill="#e8c547"/>
-          </svg>
-          <div>
-            <h2 style="margin:0">Meine Auswertung</h2>
-            <p>Zusammenfassung aller Eingaben — zum Ausdrucken oder Mitnehmen zur Beratung.</p>
-          </div>
+        <svg class="aw-logo" viewBox="0 0 80 80" style="width:52px;height:52px;flex-shrink:0">
+          <rect width="80" height="80" rx="18" fill="#0f1117"/>
+          <polygon points="40,18 68,32 40,38 12,32" fill="#e8c547"/>
+          <polygon points="40,38 68,32 68,35 40,41 12,35 12,32" fill="#c4a633"/>
+          <line x1="40" y1="38" x2="40" y2="54" stroke="#e8c547" stroke-width="2.5"/>
+          <path d="M30,44 Q30,56 40,56 Q50,56 50,44" fill="none" stroke="#5b8dee" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="40" cy="56" r="2" fill="#5b8dee"/>
+          <line x1="62" y1="32" x2="62" y2="52" stroke="#e8c547" stroke-width="2"/>
+          <circle cx="62" cy="53" r="2.5" fill="#e8c547"/>
+        </svg>
+        <div class="aw-title-block" style="flex:1;min-width:0">
+          <h2 style="margin:0">Meine Auswertung</h2>
+          <p>Zusammenfassung aller Eingaben — zum Ausdrucken oder Mitnehmen zur Beratung.</p>
         </div>
         <div class="print-qr-header" id="printQrHeader"></div>
       </div>
@@ -558,6 +560,8 @@ html, body {
         <div class="result-text" style="font-size:0.88rem;line-height:1.6">
           <strong>Fachwahlplanungshilfe — Gesamtschule Hattingen</strong><br>
           Formular zur Kurswahl für den Eintritt in die Einführungsphase 2026<br><br>
+          <strong>Informationsblatt zur Kurswahl</strong><br>
+          1. Halbjahr 2026 — Gesamtschule Hattingen<br><br>
           Im Tab „Auswertung" kannst du deine Fächerwahl und Belegung als Zusammenfassung drucken.
         </div>
       </div>
@@ -912,7 +916,7 @@ const KB = [
       💻 <strong>Informatik</strong> wählen wenn:<br>
       → MINT-Schwerpunkt geplant<br>
       → Technik/Programmierung interessiert dich<br><br>
-      Erdkunde erfüllt <u>keine</u> Belegungspflicht (nur Zusatz). Informatik auch nicht.`
+      Erdkunde erfüllt <u>keine zusätzliche</u> Belegungspflicht (Ge+SoWi bereits Pflicht). Informatik auch nicht.`
   },
   {
     keys: ['vertiefung', 'vertiefungskurs', 'vertiefungsfach'],
@@ -1333,6 +1337,53 @@ function renderProfilForm() {
         </select>
       </div>
 
+      <div class="input-group" style="margin-bottom:12px">
+        <label class="input-label">3. Abiturfach (GK, schriftlich)</label>
+        <select id="p_abi3" class="score-input" style="text-align:left;font-family:'Instrument Sans',sans-serif">
+          <option value="">— noch offen —</option>
+          <option value="deutsch">Deutsch</option>
+          <option value="englisch">Englisch</option>
+          <option value="mathe">Mathematik</option>
+          <option value="bio">Biologie</option>
+          <option value="chemie">Chemie</option>
+          <option value="physik">Physik</option>
+          <option value="geschichte">Geschichte</option>
+          <option value="sowi">Sozialwissenschaften</option>
+          <option value="paeda">Pädagogik</option>
+          <option value="kunst">Kunst</option>
+          <option value="musik">Musik</option>
+          <option value="reli">Religion</option>
+          <option value="philo">Philosophie</option>
+          <option value="erdkunde">Erdkunde</option>
+          <option value="informatik">Informatik</option>
+          <option value="fs_fort">Andere fortgeführte Fremdsprache</option>
+        </select>
+      </div>
+
+      <div class="input-group" style="margin-bottom:16px">
+        <label class="input-label">4. Abiturfach (GK, mündlich)</label>
+        <select id="p_abi4" class="score-input" style="text-align:left;font-family:'Instrument Sans',sans-serif">
+          <option value="">— noch offen —</option>
+          <option value="deutsch">Deutsch</option>
+          <option value="englisch">Englisch</option>
+          <option value="mathe">Mathematik</option>
+          <option value="bio">Biologie</option>
+          <option value="chemie">Chemie</option>
+          <option value="physik">Physik</option>
+          <option value="geschichte">Geschichte</option>
+          <option value="sowi">Sozialwissenschaften</option>
+          <option value="paeda">Pädagogik</option>
+          <option value="kunst">Kunst</option>
+          <option value="musik">Musik</option>
+          <option value="reli">Religion</option>
+          <option value="philo">Philosophie</option>
+          <option value="erdkunde">Erdkunde</option>
+          <option value="informatik">Informatik</option>
+          <option value="sport">Sport</option>
+          <option value="fs_fort">Andere fortgeführte Fremdsprache</option>
+        </select>
+      </div>
+
       <button class="action-btn" id="calcProfilBtn">📋 Belegungsplan erstellen</button>
     </div>
     <div id="profilResult"></div>
@@ -1347,6 +1398,9 @@ function calcProfil() {
   const inferd = document.getElementById('p_inferd').value;
   const lk1 = document.getElementById('p_lk1').value;
   const lk2 = document.getElementById('p_lk2').value;
+  const abi3 = document.getElementById('p_abi3').value;
+  const abi4 = document.getElementById('p_abi4').value;
+  const abiFaecher = [lk1, lk2, abi3, abi4].filter(Boolean);
 
   const konflikte = [];
   const pflicht = [];
@@ -1366,8 +1420,19 @@ function calcProfil() {
   if (lk1 && lk1 === lk2) {
     warnungen.push('⚠️ LK1 und LK2 dürfen nicht dasselbe Fach sein!');
   }
-  if (lk1 === 'geschichte' || lk1 === 'sowi') {
-    warnungen.push('⚠️ Geschichte/SoWi kann nur 2. LK sein, nicht 1. LK!');
+  // Duplikate unter allen 4 Abiturfächern
+  const abiSet = abiFaecher.filter(Boolean);
+  if (abiSet.length !== new Set(abiSet).size) {
+    warnungen.push('⚠️ Ein Fach darf nicht mehrfach als Abiturfach gewählt werden!');
+  }
+  // Religion + Sport nicht gleichzeitig als Abiturfächer (APO-GOSt §12)
+  if (abiFaecher.includes('reli') && abiFaecher.includes('sport')) {
+    warnungen.push('⚠️ Religion und Sport dürfen nicht gleichzeitig Abiturfächer sein!');
+  }
+  // Mindestens 2 von 4 aus Deutsch, Mathe, Fremdsprache (APO-GOSt §12)
+  const dmfs = abiFaecher.filter(f => ['deutsch','mathe','englisch','fs_fort'].includes(f));
+  if (abiFaecher.length >= 2 && dmfs.length < 2) {
+    warnungen.push('⚠️ Mindestens 2 der 4 Abiturfächer müssen aus Deutsch, Mathematik oder Fremdsprache sein!');
   }
   if (schwerpunkt === 'mint' && (!mint2 || mint2 === '')) {
     warnungen.push('⚠️ Naturwiss. Schwerpunkt gewählt, aber kein 2. MINT-Fach angegeben!');
@@ -1394,6 +1459,7 @@ function calcProfil() {
     pflicht.push({ fach: '2. Fremdsprache (Schwerpunkt)', ef: '✏️ schriftl.', q: '✏️ durchgehend' });
   }
 
+  pflicht.push({ fach: 'Kunst oder Musik', ef: '📌', q: '📌 mind. bis Q1-Ende' });
   pflicht.push({ fach: 'Religion / Philosophie', ef: '📌', q: '📌 mind. bis Q1-Ende' });
   pflicht.push({ fach: 'Sport', ef: '📌', q: '📌 durchgehend' });
   pflicht.push({ fach: 'Vertiefung Deutsch (GeSHat)', ef: '📌 1 HJ', q: '' });
@@ -1451,24 +1517,32 @@ function calcProfil() {
 
   html += `</div>`;
 
-  // AF-Check
+  // AF-Check (alle 4 Abiturfächer)
+  const afIFaecher = ['deutsch','englisch','fs_fort','kunst','musik'];
+  const afIIFaecher = ['geschichte','sowi','erdkunde','philo','paeda'];
+  const afIIIFaecher = ['mathe','bio','chemie','physik','informatik'];
+  const afINames = { deutsch:'Deutsch', englisch:'Englisch', fs_fort:'Fremdsprache', kunst:'Kunst', musik:'Musik' };
+  const afIINames = { geschichte:'Geschichte', sowi:'SoWi', erdkunde:'Erdkunde', philo:'Philosophie', paeda:'Pädagogik' };
+  const afIIINames = { mathe:'Mathe', bio:'Bio', chemie:'Chemie', physik:'Physik', informatik:'Informatik' };
+  const afIHit = abiFaecher.find(f => ['deutsch','englisch','fs_fort'].includes(f));
+  const afIIHit = abiFaecher.find(f => afIIFaecher.includes(f));
+  const afIIIHit = abiFaecher.find(f => afIIIFaecher.includes(f));
+
   html += `<div class="card" style="margin-top:14px">
     <div class="card-title">🎯 Aufgabenfeld-Check (Abitur)</div>
     <div class="tip-row">
-      <span class="tip-icon">${lk1 === 'deutsch' || lk1 === 'englisch' || lk1 === 'fs_fort' ? '✅' : '⚠️'}</span>
-      <span><strong>AF I</strong> (Deutsch/FS): ${lk1 === 'deutsch' ? 'Deutsch ✓' : lk1 === 'englisch' || lk1 === 'fs_fort' ? 'Fremdsprache ✓' : 'Noch kein Abi-Fach aus AF I geplant!'}</span>
+      <span class="tip-icon">${afIHit ? '✅' : '⚠️'}</span>
+      <span><strong>AF I</strong> (Deutsch/FS): ${afIHit ? (afINames[afIHit] || afIHit) + ' ✓' : 'AF I nur durch Deutsch oder Fremdsprache erfüllbar!'}</span>
     </div>
     <div class="tip-row">
-      <span class="tip-icon">${lk2 === 'geschichte' || lk2 === 'sowi' ? '✅' : '⚠️'}</span>
-      <span><strong>AF II</strong> (GeWi): ${lk2 === 'geschichte' ? 'Geschichte ✓' : lk2 === 'sowi' ? 'SoWi ✓' : 'Noch kein GeWi-Fach als Abi-Fach geplant!'}</span>
+      <span class="tip-icon">${afIIHit ? '✅' : '⚠️'}</span>
+      <span><strong>AF II</strong> (GeWi): ${afIIHit ? (afIINames[afIIHit] || afIIHit) + ' ✓' : 'Noch kein GeWi-Fach als Abi-Fach!'}</span>
     </div>
     <div class="tip-row">
-      <span class="tip-icon">${lk1 === 'mathe' || lk1 === 'bio' || lk1 === 'chemie' || lk1 === 'physik' || lk2 === 'mathe' || lk2 === 'bio' || lk2 === 'chemie' || lk2 === 'physik' ? '✅' : '⚠️'}</span>
-      <span><strong>AF III</strong> (MINT): ${lk1 === 'mathe' || lk2 === 'mathe' ? 'Mathe ✓' : lk1 === 'bio'||lk2==='bio' ? 'Bio ✓' : lk1==='chemie'||lk2==='chemie' ? 'Chemie ✓' : lk1==='physik'||lk2==='physik' ? 'Physik ✓' : 'Noch kein MINT-Fach als Abi-Fach geplant!'}</span>
+      <span class="tip-icon">${afIIIHit ? '✅' : '⚠️'}</span>
+      <span><strong>AF III</strong> (MINT): ${afIIIHit ? (afIIINames[afIIIHit] || afIIIHit) + ' ✓' : 'Noch kein MINT-Fach als Abi-Fach!'}</span>
     </div>
-    <div style="font-size:0.78rem;color:var(--text2);margin-top:8px">
-      3. und 4. Abiturfach ergänzen, um alle AF abzudecken!
-    </div>
+    ${abiFaecher.length < 4 ? '<div style="font-size:0.78rem;color:var(--text2);margin-top:8px">Noch nicht alle 4 Abiturfächer gewählt.</div>' : ''}
   </div>`;
 
   res.innerHTML = html;
@@ -1726,7 +1800,8 @@ function renderAuswertung() {
     const labels = {
       p_fs2: '2. Fremdsprache (Sek I)', p_schwerpunkt: 'Schwerpunkt',
       p_mint2: '2. MINT-Fach', p_inferd: 'Informatik / Erdkunde',
-      p_lk1: '1. Leistungskurs', p_lk2: '2. Leistungskurs'
+      p_lk1: '1. Leistungskurs', p_lk2: '2. Leistungskurs',
+      p_abi3: '3. Abiturfach (GK)', p_abi4: '4. Abiturfach (GK)'
     };
     const optLabels = {
       franz: 'Französisch', ital: 'Italienisch', latein: 'Latein', nein: 'Keine',
@@ -1734,10 +1809,11 @@ function renderAuswertung() {
       bio: 'Biologie', chemie: 'Chemie', physik: 'Physik', informatik: 'Informatik',
       erdkunde: 'Erdkunde', deutsch: 'Deutsch', englisch: 'Englisch',
       mathe: 'Mathematik', geschichte: 'Geschichte', sowi: 'Sozialwissenschaften',
-      fs_fort: 'Fortgeführte Fremdsprache'
+      fs_fort: 'Fortgeführte Fremdsprache', paeda: 'Pädagogik', kunst: 'Kunst',
+      musik: 'Musik', reli: 'Religion', philo: 'Philosophie', sport: 'Sport'
     };
     html += `<div class="card"><div class="card-title">🗂️ Belegungsprofil</div>`;
-    ['p_fs2','p_schwerpunkt','p_mint2','p_inferd','p_lk1','p_lk2'].forEach(id => {
+    ['p_fs2','p_schwerpunkt','p_mint2','p_inferd','p_lk1','p_lk2','p_abi3','p_abi4'].forEach(id => {
       const el = document.getElementById(id);
       const val = el ? el.value : '';
       if (val) {
@@ -1748,17 +1824,19 @@ function renderAuswertung() {
       }
     });
 
-    // AF-Check einbauen
+    // AF-Check einbauen (alle 4 Abiturfächer)
     const lk1 = document.getElementById('p_lk1')?.value || '';
     const lk2 = document.getElementById('p_lk2')?.value || '';
-    const afI = lk1 === 'deutsch' || lk1 === 'englisch' || lk1 === 'fs_fort' || lk2 === 'deutsch' || lk2 === 'englisch' || lk2 === 'fs_fort';
-    const afII = lk2 === 'geschichte' || lk2 === 'sowi' || lk1 === 'geschichte' || lk1 === 'sowi';
-    const mintFaecher = ['mathe','bio','chemie','physik'];
-    const afIII = mintFaecher.includes(lk1) || mintFaecher.includes(lk2);
+    const ab3 = document.getElementById('p_abi3')?.value || '';
+    const ab4 = document.getElementById('p_abi4')?.value || '';
+    const awAbiFaecher = [lk1, lk2, ab3, ab4].filter(Boolean);
+    const afI = awAbiFaecher.some(f => ['deutsch','englisch','fs_fort'].includes(f));
+    const afII = awAbiFaecher.some(f => ['geschichte','sowi','erdkunde','philo','paeda'].includes(f));
+    const afIII = awAbiFaecher.some(f => ['mathe','bio','chemie','physik','informatik'].includes(f));
     html += `<div style="margin-top:12px;font-size:0.82rem">
       <strong style="color:var(--text)">Aufgabenfeld-Check (Abitur):</strong>
       <div style="margin-top:6px">
-        <div style="padding:3px 0">${afI ? '✅' : '⚠️'} <strong>AF I</strong> (Deutsch/FS): ${afI ? 'abgedeckt' : 'noch kein Abi-Fach aus AF I!'}</div>
+        <div style="padding:3px 0">${afI ? '✅' : '⚠️'} <strong>AF I</strong> (Deutsch/FS): ${afI ? 'abgedeckt' : 'AF I nur durch Deutsch oder Fremdsprache!'}</div>
         <div style="padding:3px 0">${afII ? '✅' : '⚠️'} <strong>AF II</strong> (GeWi): ${afII ? 'abgedeckt' : 'noch kein GeWi-Fach als Abi-Fach!'}</div>
         <div style="padding:3px 0">${afIII ? '✅' : '⚠️'} <strong>AF III</strong> (MINT): ${afIII ? 'abgedeckt' : 'noch kein MINT-Fach als Abi-Fach!'}</div>
       </div>
@@ -1863,6 +1941,8 @@ function saveToStorage() {
       inferd: document.getElementById('p_inferd')?.value || '',
       lk1: document.getElementById('p_lk1')?.value || '',
       lk2: document.getElementById('p_lk2')?.value || '',
+      abi3: document.getElementById('p_abi3')?.value || '',
+      abi4: document.getElementById('p_abi4')?.value || '',
     },
     chat: document.getElementById('chatMessages')?.innerHTML || '',
     savedAt: new Date().toISOString()
@@ -1931,7 +2011,7 @@ renderProfilForm = function() {
   _origRenderProfilForm();
   if (window._savedProfil) {
     const p = window._savedProfil;
-    ['fs2','schwerpunkt','mint2','inferd','lk1','lk2'].forEach(id => {
+    ['fs2','schwerpunkt','mint2','inferd','lk1','lk2','abi3','abi4'].forEach(id => {
       const el = document.getElementById('p_' + id);
       if (el && p[id]) el.value = p[id];
     });

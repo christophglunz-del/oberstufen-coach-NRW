@@ -1,4 +1,4 @@
-const CACHE_NAME = 'oscoach-v2';
+const CACHE_NAME = 'oscoach-v3';
 const ASSETS = ['./', './index.html'];
 
 self.addEventListener('install', e => {
