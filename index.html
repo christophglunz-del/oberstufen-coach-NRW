@@ -442,7 +442,9 @@ html, body {
   .result-text { color: #000 !important; }
   .result-text strong { color: #000 !important; }
   .tip-row { color: #000 !important; }
-  .aw-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #ddd; }
+  .aw-row { display: flex; justify-content: space-between; padding: 5px 6px; border-bottom: none; }
+  .aw-row:nth-child(even) { background: #f3f3f3 !important; }
+  .aw-row:nth-child(odd) { background: #fff !important; }
   .aw-label { color: #444 !important; }
   .aw-value { color: #000 !important; font-weight: 600; }
   .score-input { border: none !important; border-bottom: 1px solid #666 !important;
@@ -550,7 +552,7 @@ html, body {
         </svg>
         <div class="aw-title-block" style="flex:1;min-width:0">
           <h2 style="margin:0">Meine Auswertung</h2>
-          <p class="aw-subtitle" style="margin:0;font-size:0.8rem;color:var(--text2)">Gesamtschule Hattingen — Einführungsphase 2026</p>
+          <p class="aw-subtitle" style="margin:0;font-size:0.8rem;color:var(--text2)">Gesamtschule Hattingen</p>
           <p>Zusammenfassung aller Eingaben — zum Ausdrucken oder Mitnehmen zur Beratung.</p>
         </div>
         <div class="print-qr-header" id="printQrHeader"></div>
