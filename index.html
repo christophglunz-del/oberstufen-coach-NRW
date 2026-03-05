@@ -754,7 +754,7 @@ html, body {
 </div>
 
 <script>
-const APP_VERSION = '1.6.0';
+const APP_VERSION = '1.6.1';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 
 // ============================================================
@@ -1960,6 +1960,12 @@ function renderAuswertung() {
 
 // Print-Button
 document.getElementById('printAuswertungBtn').addEventListener('click', () => window.print());
+
+// Vor dem Drucken Scroll-Position zurücksetzen damit Kopf sichtbar
+window.addEventListener('beforeprint', () => {
+  document.querySelector('.content').scrollTop = 0;
+  window.scrollTo(0, 0);
+});
 
 // Auswertung rendern wenn Tab geöffnet wird
 const _origShowSection = showSection;
