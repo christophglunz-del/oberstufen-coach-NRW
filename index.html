@@ -404,15 +404,16 @@ html, body {
 <body>
 <div id="app">
   <header class="header">
-    <div class="logo">Ober<span>Stufen</span>Coach <span style="font-size:0.7rem;color:var(--text2);font-family:'DM Mono',monospace;font-weight:400;">NRW</span></div>
+    <div class="logo">Ober<span>Stufen</span>Coach <span style="font-size:0.7rem;color:var(--text2);font-family:'DM Mono',monospace;font-weight:400;">NRW</span><div style="font-size:0.65rem;color:var(--gold);font-family:'DM Mono',monospace;font-weight:500;letter-spacing:0.05em;margin-top:1px">Gesamtschule Hattingen</div></div>
     <span class="offline-badge" id="offlineBadge">✓ Offline</span>
   </header>
 
   <nav class="nav">
-    <button class="nav-btn active" onclick="showSection('chat')" id="nav-chat">💬 Chat</button>
-    <button class="nav-btn" onclick="showSection('faecher')" id="nav-faecher">📚 Fächer</button>
-    <button class="nav-btn" onclick="showSection('klausur')" id="nav-klausur">📅 Klausuren</button>
-    <button class="nav-btn" onclick="showSection('rechner')" id="nav-rechner">🧮 Notenrechner</button>
+    <button class="nav-btn active" id="nav-chat">💬 Chat</button>
+    <button class="nav-btn" id="nav-faecher">📚 Fächer</button>
+    <button class="nav-btn" id="nav-klausur">📅 Klausuren</button>
+    <button class="nav-btn" id="nav-rechner">🧮 Notenrechner</button>
+    <button class="nav-btn" id="nav-profil">🗂️ Belegung</button>
   </nav>
 
   <div class="content">
@@ -421,25 +422,17 @@ html, body {
     <div class="section active" id="section-chat">
       <div class="chat-wrap">
         <div class="chat-messages" id="chatMessages">
-          <div class="msg bot">
-            <strong>Hallo! 👋</strong><br>
-            Ich bin dein OberStufenCoach für die gymnasiale Oberstufe in NRW.<br><br>
-            Ich beantworte Fragen zu:<br>
-            <span class="tag">Fächerwahl</span>
-            <span class="tag">Klausurpflicht</span>
-            <span class="tag">Schwerpunkt</span>
-            <span class="tag">Abiturfächer</span>
-            <span class="tag">Notenrechner</span>
-            <span class="tag">Versetzung</span>
-          </div>
         </div>
         <div class="quick-chips" id="quickChips">
-          <div class="chip" onclick="sendChip('Welche Fächer sind Pflicht?')">Welche Fächer sind Pflicht?</div>
-          <div class="chip" onclick="sendChip('Was ist der Unterschied zwischen sprachlichem und naturwissenschaftlichem Schwerpunkt?')">Schwerpunkt erklären</div>
-          <div class="chip" onclick="sendChip('Welche Fächer muss ich schriftlich belegen?')">Klausurpflicht</div>
-          <div class="chip" onclick="sendChip('Wie wähle ich meine Abiturfächer?')">Abiturfächer wählen</div>
-          <div class="chip" onclick="sendChip('Wie funktioniert die Versetzung in die Q-Phase?')">Versetzung EF→Q</div>
-          <div class="chip" onclick="sendChip('Wie wird die Abiturnote berechnet?')">Abiturnote berechnen</div>
+          <div class="chip" data-chip="Welche Fächer sind Pflicht?">Welche Fächer sind Pflicht?</div>
+          <div class="chip" data-chip="Was ist der Unterschied zwischen sprachlichem und naturwissenschaftlichem Schwerpunkt?">Schwerpunkt erklären</div>
+          <div class="chip" data-chip="Welche Fächer muss ich schriftlich belegen?">Klausurpflicht</div>
+          <div class="chip" data-chip="Wie wähle ich meine Abiturfächer?">Abiturfächer wählen</div>
+          <div class="chip" data-chip="Wie funktioniert die Versetzung in die Q-Phase?">Versetzung EF→Q</div>
+          <div class="chip" data-chip="GeSHat Schulregeln">GeSHat-Regeln</div>
+          <div class="chip" data-chip="Wie wird die Abiturnote berechnet?">Abiturnote berechnen</div>
+          <div class="chip" data-chip="Was ist die Fachhochschulreife?">Fachhochschulreife</div>
+          <div class="chip" data-chip="Was ist das Latinum?">Latinum</div>
         </div>
         <div class="chat-input-area">
           <div class="chat-input-row">
@@ -604,12 +597,16 @@ html, body {
       </div>
     </div>
 
+    <!-- ===== BELEGUNGSPLAN ===== -->
+    <div class="section" id="section-profil">
+      <div id="profilContent"></div>
+    </div>
+
   </div><!-- /content -->
 </div><!-- /app -->
 
 <div class="toast" id="toast"></div>
 
-<script>
 // ============================================================
 // NAVIGATION
 // ============================================================
@@ -620,6 +617,7 @@ function showSection(id) {
   document.getElementById('nav-' + id).classList.add('active');
   if (id === 'faecher' && !window.faecherInit) initFaecher();
   if (id === 'klausur' && !window.klausurInit) { window.klausurInit = true; showKlausur('EF1'); }
+  if (id === 'profil' && !window.profilInit) initProfil();
 }
 
 // ============================================================
@@ -653,153 +651,257 @@ window.addEventListener('offline', () => showToast('📴 Offline — App funktio
 window.addEventListener('online', () => showToast('🌐 Wieder online'));
 
 // ============================================================
-// CHAT — REGELBASIERTE KI
+// CHAT — ERWEITERTE WISSENSDATENBANK
 // ============================================================
 const KB = [
   {
-    keys: ['pflicht', 'fächer pflicht', 'welche fächer', 'muss ich', 'belegung'],
+    keys: ['pflicht', 'fächer pflicht', 'welche fächer', 'muss ich', 'belegung', 'pflichtfächer'],
     answer: `<strong>Pflichtfächer in der Einführungsphase (EF):</strong><br><br>
-      <span class="tag">Deutsch</span>
-      <span class="tag">Fremdsprache (fortg.)</span>
-      <span class="tag">Kunst oder Musik</span>
-      <span class="tag">Gesellschaftswiss.</span>
-      <span class="tag">Mathematik</span>
-      <span class="tag">Naturwissenschaft</span>
-      <span class="tag">Religion/Philosophie</span>
-      <span class="tag">Sport</span>
-      <span class="tag">Schwerpunktfach</span>
-      <br><br>Das Schwerpunktfach ist entweder eine <strong>zweite Fremdsprache</strong> (sprachlicher Schwerpunkt) oder ein <strong>zweites MINT-Fach</strong> (naturwiss. Schwerpunkt).`
+      <span class="tag" data-chip="Was ist der Schwerpunkt?">Schwerpunktfach</span>
+      <span class="tag" data-chip="Welche Fremdsprachenregeln gibt es?">Fremdsprache</span>
+      plus diese festen Fächer:<br><br>
+      📌 Deutsch · Mathematik · Kunst oder Musik<br>
+      📌 Ein Gesellschaftswiss.-Fach · Eine Naturwiss.<br>
+      📌 Religion/Philosophie · Sport<br><br>
+      <strong>GeSHat-spezifisch:</strong> Geschichte UND Sozialwissenschaften müssen mind. in der EF belegt sein (eines davon schriftlich).`
   },
   {
-    keys: ['schwerpunkt', 'sprachlich', 'naturwissenschaftlich', 'mint', 'unterschied'],
-    answer: `<strong>Schwerpunktwahl — die wichtigste Entscheidung:</strong><br><br>
+    keys: ['schwerpunkt', 'sprachlich', 'naturwissenschaftlich', 'mint', 'unterschied schwerpunkt'],
+    answer: `<strong>Die zwei Schwerpunkte — deine wichtigste Entscheidung:</strong><br><br>
       🔤 <strong>Sprachlicher Schwerpunkt:</strong><br>
-      Du belegst <u>2 Fremdsprachen</u> durchgängig bis Abitur. Nur 1 Naturwissenschaft nötig. Geeignet wenn du sprachbegabt bist und evtl. eine Fremdsprache als LK willst.<br><br>
+      → 2 Fremdsprachen durchgehend bis Abitur<br>
+      → Nur 1 Naturwiss. verpflichtend<br>
+      → Klausurpflicht NW entfällt in Q1/Q2 bei 2 FS<br><br>
       🔬 <strong>Naturwiss. Schwerpunkt:</strong><br>
-      Du belegst <u>2 MINT-Fächer</u> (z.B. Bio+Chemie, Mathe+Informatik) durchgängig. Nur 1 Fremdsprache nötig. Ideal für MINT-LK und MINT-Studium.<br><br>
-      <strong>Die Wahl jetzt bestimmt deinen gesamten Abi-Weg!</strong>`
+      → 2 MINT-Fächer durchgehend (z.B. Bio+Chemie)<br>
+      → Nur 1 Fremdsprache verpflichtend<br><br>
+      ⚠️ <strong>GeSHat-Regel:</strong> Informatik und Erdkunde schließen sich gegenseitig aus!`
   },
   {
-    keys: ['klausur', 'schriftlich', 'klausurpflicht', 'schreiben'],
-    answer: `<strong>Klausurpflicht in der EF:</strong><br><br>
-      Pflicht: <span class="tag">Deutsch</span> <span class="tag">Mathe</span> <span class="tag">Alle Fremdsprachen</span> <span class="tag">1 GeWi-Fach</span> <span class="tag">1 Naturwiss.</span><br><br>
-      <strong>EF.2 Zentrale Klausuren:</strong> Deutsch <em>(1. Juni 2026)</em> und Mathe <em>(4. Juni 2026)</em> — landesweit einheitlich.<br><br>
-      In der Q-Phase: Alle 4 Abiturfächer + mind. Deutsch, Mathe, eine Fremdsprache.`
+    keys: ['klausur', 'schriftlich', 'klausurpflicht', 'schreiben müssen'],
+    answer: `<strong>Klausurpflicht — Überblick:</strong><br><br>
+      <strong>EF (beide Halbjahre):</strong><br>
+      ✏️ Deutsch, Mathe, alle Fremdsprachen<br>
+      ✏️ 1 Gesellschaftswiss., 1 Naturwiss.<br><br>
+      <strong>EF.2 Zentrale Klausuren:</strong><br>
+      📅 Deutsch: 1. Juni 2026<br>
+      📅 Mathe: 4. Juni 2026<br><br>
+      <strong>Q-Phase:</strong> Alle 4 Abiturfächer + Deutsch, Mathe, 1 Fremdsprache<br><br>
+      <span class="tag" data-chip="Wie läuft die Klausurplanung in Q1 und Q2?">Klausurplan Q-Phase</span>`
   },
   {
-    keys: ['abiturfach', 'abitur wählen', 'leistungskurs', 'lk wählen', 'wie wähle'],
+    keys: ['klausurplan q', 'klausuren q1', 'klausuren q2', 'klausurplanung'],
+    answer: `<strong>Klausuren in der Q-Phase:</strong><br><br>
+      <strong>Q1.1 / Q1.2 / Q2.1:</strong> Je 2 Klausuren pro Fach<br>
+      🎓 LK: 135–180 Min. → in Q2.1: 225 Min.<br>
+      📝 GK: 90–135 Min. → in Q2.1: 135–180 Min.<br><br>
+      <strong>Q2.2 (letztes Halbjahr):</strong><br>
+      → Nur noch 1. bis 3. Abiturfach: je 1 Vorabitur-Klausur<br>
+      → 4. Fach: keine Klausur, nur mündliche Prüfung<br><br>
+      🗣️ Moderne Fremdsprachen: in einem Halbjahr (Q1.1–Q2.1) eine Klausur → mündliche Prüfung (Pflicht!)`
+  },
+  {
+    keys: ['abiturfach', 'abitur wählen', 'leistungskurs', 'lk wählen', 'wie wähle', 'abiturfächer'],
     answer: `<strong>Die 4 Abiturfächer — alle Regeln:</strong><br><br>
-      ✅ Alle 3 <strong>Aufgabenfelder</strong> müssen vertreten sein<br>
-      ✅ <strong>AF I</strong> (sprachlich-künstlerisch) nur durch Deutsch oder Fremdsprache<br>
-      ✅ <strong>2 der 4 Fächer</strong> aus: Deutsch, Mathe oder Fremdsprache<br>
-      ✅ <strong>1. LK</strong> muss Deutsch, Mathe, fortg. Fremdsprache oder Naturwiss. sein<br>
-      ✅ Fach muss seit EF belegt + ab Q1 als Klausurfach<br>
-      ❌ Religion und Sport <u>nicht gleichzeitig</u> als Abi-Fach`
+      ✅ Alle 3 Aufgabenfelder müssen vertreten sein<br>
+      ✅ AF I nur durch <strong>Deutsch oder Fremdsprache</strong><br>
+      ✅ <strong>2 von 4</strong> aus: Deutsch, Mathe oder Fremdsprache<br>
+      ✅ 1. LK = Deutsch, Mathe, fortg. FS oder Naturwiss.<br>
+      ✅ Fach seit EF belegt + ab Q1 als Klausurfach<br>
+      ❌ Religion und Sport nicht gleichzeitig<br><br>
+      <span class="tag" data-chip="Was sind die drei Aufgabenfelder?">Aufgabenfelder erklären</span>`
   },
   {
-    keys: ['versetzung', 'versetzt', 'ef', 'einführung', 'qualifikation', 'q-phase'],
-    answer: `<strong>Versetzung EF → Qualifikationsphase:</strong><br><br>
-      Grundlage: 10 Kurse (9 Pflicht + 1 Wahl aus EF.2)<br><br>
-      ✅ Versetzt, wenn in maximal <strong>1 Kurs mangelhaft</strong>, alle anderen ausreichend<br>
-      ⚠️ Mangel in <strong>Deutsch, Mathe oder Fremdsprache</strong> → muss durch "befriedigend" in einem anderen dieser Fächer ausgeglichen werden<br>
-      ❌ Wer nach Wiederholung nicht versetzt wird → muss Oberstufe verlassen`
+    keys: ['aufgabenfeld', 'af i', 'af ii', 'af iii', 'drei aufgabenfelder'],
+    answer: `<strong>Die 3 Aufgabenfelder (AF):</strong><br><br>
+      <strong>AF I — Sprachlich-literarisch-künstlerisch:</strong><br>
+      Deutsch, Fremdsprachen, Kunst, Musik<br><br>
+      <strong>AF II — Gesellschaftswissenschaftlich:</strong><br>
+      Geschichte, Geographie, SoWi, Philosophie, Pädagogik<br><br>
+      <strong>AF III — Mathematisch-naturwiss.-technisch:</strong><br>
+      Mathe, Bio, Physik, Chemie, Informatik<br><br>
+      ⚠️ Alle 3 AF müssen unter den 4 Abiturfächern vertreten sein — AF I <u>nur</u> durch Deutsch oder Fremdsprache!`
   },
   {
-    keys: ['abiturnote', 'berechnet', 'block', 'gesamtqualifikation', 'note berechnen', 'punkte'],
-    answer: `<strong>Wie die Abiturnote berechnet wird:</strong><br><br>
-      📘 <strong>Block I</strong> (200–600 Pkt): Noten der Q-Phase — LK doppelt gewertet<br>
-      E(I) = (Punktsumme ÷ Kurszahl) × 40<br><br>
-      📗 <strong>Block II</strong> (100–300 Pkt): 4 Abiturprüfungen × 5<br>
-      Mind. 2 Fächer (inkl. 1 LK) ≥ 25 Punkte<br><br>
-      🏆 Gesamt = Block I + Block II (300–900 Pkt)<br>
-      Note 1,0 = ab 823 Punkte | Note 4,0 = 300 Punkte<br><br>
-      Nutze den <strong>Notenrechner</strong> für konkrete Zahlen! 🧮`
+    keys: ['versetzung', 'versetzt', 'einführungsphase', 'ef bestehen', 'q-phase', 'nicht versetzt'],
+    answer: `<strong>Versetzung EF → Q-Phase:</strong><br><br>
+      Grundlage: 10 Kurse aus EF.2 (9 Pflicht + 1 Wahl)<br><br>
+      ✅ Versetzt wenn: max. <strong>1 Mangelhaft</strong>, Rest ausreichend<br>
+      ⚠️ Mangel in Deutsch/Mathe/Fremdsprache → muss durch "Befriedigend" im selben Bereich ausgeglichen werden<br>
+      🔄 Wiederholung der EF möglich (einmalig)<br>
+      ❌ Nach 2. EF nicht versetzt → Oberstufe verlassen<br><br>
+      📋 Nachprüfung in 1 Fach möglich, wenn dadurch Versetzung erreicht wird`
   },
   {
-    keys: ['facharbeit', 'hausarbeit', 'wissenschaftlich', 'seminararbeit'],
-    answer: `<strong>Die Facharbeit in der Q-Phase:</strong><br><br>
-      📝 Umfang: <strong>8–12 DIN-A4-Seiten</strong>, wissenschaftlich verfasst<br>
-      🗓️ Typischerweise in <strong>Q1</strong>, ersetzt eine Klausur<br>
-      📊 Zählt wie eine <strong>Klausurnote</strong><br>fach<br>
-      🔬 Thema aus einem deiner Klausurfächer<br><br>
-      <strong>Ausnahme:</strong> Wer einen Projektkurs belegt, ist <u>befreit</u>!`
+    keys: ['abiturnote', 'note berechnen', 'block i', 'block ii', 'gesamtqualifikation', 'punkte berechnen'],
+    answer: `<strong>Abiturnote — so wird gerechnet:</strong><br><br>
+      📘 <strong>Block I</strong> (200–600 Pkt):<br>
+      E(I) = (Punktsumme ÷ Kurszahl) × 40<br>
+      LK zählen doppelt · 35–40 Kurse einbringen<br><br>
+      📗 <strong>Block II</strong> (100–300 Pkt):<br>
+      4 Abiturprüfungen × 5 · mind. 2 Fächer ≥ 25 Pkt.<br><br>
+      🏆 Gesamt 300–900 Pkt → Note 4,0 bis 1,0<br>
+      Note 1,0 = ab 823 Pkt<br><br>
+      <span class="tag" data-chip="Was sind Defizitregelungen?">Defizitregeln</span>
+      <span class="tag" data-chip="Was ist die besondere Lernleistung?">Besondere Lernleistung</span>`
   },
   {
-    keys: ['projektkurs', 'projekt'],
-    answer: `<strong>Projektkurs — lohnt er sich?</strong><br><br>
-      📅 2 Halbjahre in Q1/Q2, 2–3 Stunden/Woche<br>
-      📊 Jahresnote kann <strong>doppelt</strong> (wie 2 GK) in Block I eingebracht werden<br>
-      🏆 Oder alternativ als <strong>Besondere Lernleistung</strong> in Block II<br>
-      📝 Befreit von der <strong>Facharbeit</strong><br><br>
-      Lohnt sich wenn du in einem Thema besonders stark bist!`
+    keys: ['defizit', 'mangelhaft', 'ungenügend', 'durchfallen', '4 punkte', 'defizitregeln'],
+    answer: `<strong>Defizitregelungen — sehr wichtig!</strong><br><br>
+      ⚠️ Bereits <strong>4 Punkte</strong> (schwach ausreichend) = Defizit<br><br>
+      Bei 35–37 Kursen: max. <strong>7 Defizite</strong> (davon max. 3 in LK)<br>
+      Bei 38–40 Kursen: max. <strong>8 Defizite</strong> (davon max. 3 in LK)<br><br>
+      ❌ <strong>0 Punkte</strong> in Pflichtfach = nicht belegt → sofortige Nichtzulassung!<br><br>
+      Im Abitur: mind. 2 Fächer ≥ 25 Pkt., kein Fach 0 Pkt.<br>
+      → Gesamtpunkte Block I + II: min. 300 Pkt.`
   },
   {
-    keys: ['fremdsprache', 'neue fremdsprache', 'neu einsetzend', 'spanisch', 'französisch', 'latein'],
-    answer: `<strong>Fortgeführt vs. neu einsetzend:</strong><br><br>
-      📚 <strong>Fortgeführte Fremdsprache</strong> (aus Sek I):<br>
-      → 3-stündig, kann als <u>Leistungskurs</u> gewählt werden<br>
-      → Als 1.–4. Abiturfach möglich<br><br>
-      🆕 <strong>Neu einsetzende Fremdsprache</strong> (erst ab EF):<br>
-      → <strong>4-stündig</strong> (mehr Aufwand!)<br>
-      → <u>Kein Leistungskurs</u> möglich<br>
-      → Nur als 3./4. Abiturfach im GK möglich<br>
-      → Muss <strong>bis zum Abitur</strong> durchgehalten werden`
+    keys: ['fremdsprache', 'neue fremdsprache', 'neu einsetzend', 'fortgeführt', 'zweite fremdsprache'],
+    answer: `<strong>Fremdsprachen — fortgeführt vs. neu:</strong><br><br>
+      📚 <strong>Fortgeführte FS</strong> (aus Sek I):<br>
+      → 3-stündig · als Leistungskurs möglich<br>
+      → Als 1.–4. Abiturfach wählbar<br><br>
+      🆕 <strong>Neu einsetzende FS</strong> (ab EF):<br>
+      → 4-stündig · <u>kein LK möglich</u><br>
+      → Nur als 3./4. Abiturfach (GK)<br>
+      → Muss bis Abitur durchgehalten werden<br><br>
+      <strong>GeSHat-Regeln:</strong><br>
+      🇮🇹 Italienisch ab Kl. 6 → durchgängig Sek II (außer Frz. ab Kl. 10)<br>
+      🇫🇷 Französisch ab Kl. 7 → bis Ende EF Pflicht<br>
+      🏛️ Latein → bis Ende EF, danach freiwillig`
   },
   {
-    keys: ['defizit', 'mangelhaft', 'ungenügend', 'durchfallen', 'nicht bestehen', '4 punkte'],
-    answer: `<strong>Defizitregelungen:</strong><br><br>
-      ⚠️ Bereits <strong>4 Punkte</strong> (schwach ausreichend) = Defizit!<br><br>
-      Bei 35–37 eingebrachten Kursen: max. <strong>7 Defizite</strong> (davon max. 3 in LK)<br>
-      Bei 38–40 eingebrachten Kursen: max. <strong>8 Defizite</strong> (davon max. 3 in LK)<br><br>
-      ❌ Ein Kurs mit <strong>0 Punkten</strong> = nicht belegt → sofortige Nichtzulassung<br><br>
-      Im Abitur: mind. 2 Fächer ≥ 25 Pkt., keines darf 0 haben.`
+    keys: ['geshat', 'gesamtschule hattingen', 'schulregel', 'schulspezifisch'],
+    answer: `<strong>GeSHat-Schulregeln (Gesamtschule Hattingen):</strong><br><br>
+      ❌ <strong>Informatik und Erdkunde schließen sich aus!</strong><br>
+      → Du kannst nur eines von beiden belegen<br><br>
+      🇮🇹 Italienisch ab Kl. 6 → durchgängig bis Abitur<br>
+      🇫🇷 Französisch ab Kl. 7 → mind. bis Ende EF<br>
+      🏛️ Latein → bis Ende EF Pflicht, danach freiwillig<br><br>
+      📝 Vertiefungskurse: je 1 HJ Deutsch + Mathe (Pflicht)<br>
+      ⚠️ Vertiefungsfächer zählen NICHT zur Gesamtqualifikation!<br><br>
+      📊 Geschichte UND SoWi: mind. eines in EF belegen`
   },
   {
-    keys: ['wochenstunden', 'kurse', 'wie viele', 'stundenplan', 'stunden'],
+    keys: ['erdkunde', 'informatik', 'erdkunde informatik', 'ausschluss'],
+    answer: `<strong>⚠️ GeSHat: Erdkunde ODER Informatik — nicht beides!</strong><br><br>
+      Diese beiden Fächer schließen sich an der Gesamtschule Hattingen gegenseitig aus.<br><br>
+      🌍 <strong>Erdkunde</strong> wählen wenn:<br>
+      → Du Geographie-Themen magst<br>
+      → Es als Abiturfach in Frage kommt (AF II)<br><br>
+      💻 <strong>Informatik</strong> wählen wenn:<br>
+      → MINT-Schwerpunkt geplant<br>
+      → Technik/Programmierung interessiert dich<br><br>
+      Erdkunde erfüllt <u>keine</u> Belegungspflicht (nur Zusatz). Informatik auch nicht.`
+  },
+  {
+    keys: ['vertiefung', 'vertiefungskurs', 'vertiefungsfach'],
+    answer: `<strong>Vertiefungsfächer an der GeSHat:</strong><br><br>
+      📝 Je 1 Halbjahr Vertiefung in <strong>Deutsch</strong> und <strong>Mathematik</strong> sind Pflicht<br>
+      → 2-stündig · keine Klausuren<br>
+      → Keine Noten, nur Lernfortschritts-Rückmeldungen<br><br>
+      ⚠️ <strong>Wichtig:</strong> Vertiefungsfächer zählen zur Wochenstundenzahl, aber <u>NICHT</u> zur Gesamtqualifikation!<br><br>
+      In der Q-Phase: insg. 2 weitere Vertiefungs-Halbjahreskurse möglich`
+  },
+  {
+    keys: ['latinum', 'latein', 'graecum', 'kleines latinum'],
+    answer: `<strong>Latinum und Kleines Latinum:</strong><br><br>
+      🏛️ <strong>Latinum</strong> bekommst du wenn:<br>
+      → Latein ab Kl. 5/6, bis Ende EF bei mind. ausreichend<br>
+      → ODER: Latein ab Kl. 8, bis Ende Q-Phase (mind. 5 Pkt.)<br><br>
+      📜 <strong>Kleines Latinum:</strong><br>
+      → Latein bis 1 Jahr vor Latinum, mind. ausreichend<br><br>
+      ℹ️ An der GeSHat: Latein ist bis Ende EF Pflicht, danach freiwillig als 3. Fremdsprache weiterzuführen<br><br>
+      Das Latinum kann auch schon am Ende der Sek I erworben werden (ab Kl. 5, mind. 20 WS, Originallektüre)`
+  },
+  {
+    keys: ['fhr', 'fachhochschulreife', 'fachabitur', 'fachoberschule'],
+    answer: `<strong>Schulischer Teil der Fachhochschulreife (FHR):</strong><br><br>
+      📋 Frühestens nach Ende Q1 möglich<br>
+      → Leistungen aus 2 aufeinanderfolgenden, aufsteigenden Halbjahren<br><br>
+      ✅ <strong>Volle FHR</strong> = schulischer Teil + Berufsausbildung ODER 1-jähriges gelenktes Praktikum<br><br>
+      🌍 Anerkannt in allen Bundesländern außer Bayern und Sachsen<br><br>
+      ℹ️ Wer die Oberstufe nach Q1 verlässt (z.B. nach Nicht-Zulassung zum Abitur) kann die FHR trotzdem erhalten`
+  },
+  {
+    keys: ['ausland', 'auslandsjahr', 'austausch', 'auslandsaufenthalt', 'usa', 'england'],
+    answer: `<strong>Auslandsaufenthalt in der Oberstufe:</strong><br><br>
+      🌍 Bester Zeitpunkt: <strong>EF oder zwischen EF und Q1</strong><br>
+      → Auf Antrag der Eltern möglich<br>
+      → Bei guten Leistungen: direkter Einstieg in Q1 möglich<br><br>
+      📅 Eingeschobenes Jahr zählt <u>nicht</u> zur Höchstverweildauer (4 Jahre)<br><br>
+      ❌ Q2 kann <u>nicht</u> für Auslandsaufenthalt unterbrochen werden<br><br>
+      ✅ Im Ausland erworbene Zertifikate (z.B. Cambridge) können als Sprachnachweis anerkannt werden`
+  },
+  {
+    keys: ['besondere lernleistung', 'bll', 'jugend forscht', 'wettbewerb'],
+    answer: `<strong>Besondere Lernleistung (BLL):</strong><br><br>
+      📌 Kann als 5. Komponente in Block II eingebracht werden<br>
+      → Mindestens 2 Halbjahre Laufzeit<br>
+      → Wettbewerbsbeitrag (Jugend forscht, MO, etc.) oder Projektkurs-Ergebnis<br><br>
+      📊 Bei BLL: alle 5 Komponenten nur <strong>vierfach</strong> statt fünffach gewertet<br>
+      → Mindestpunkte sinken auf 20 (statt 25) in 2 Fächern<br><br>
+      ⚡ Lohnt sich wenn du eine herausragende Einzelleistung hast (13–15 Pkt.)!<br>
+      Anmeldung spätestens zu Beginn Q2.1`
+  },
+  {
+    keys: ['projektkurs', 'projekt kurs'],
+    answer: `<strong>Projektkurs:</strong><br><br>
+      📅 2 Halbjahre in Q-Phase · 2–3 Stunden/Woche<br>
+      📎 An 1–2 Referenzfächer angebunden<br><br>
+      📊 Jahresnote kann <strong>doppelt</strong> (= wie 2 GK) in Block I eingebracht werden<br>
+      <strong>ODER</strong> als Besondere Lernleistung in Block II — nicht beides!<br><br>
+      📝 Befreit von der Facharbeit<br><br>
+      ✅ Empfehlenswert wenn du in einem Thema besonders stark bist`
+  },
+  {
+    keys: ['facharbeit', 'hausarbeit', 'wissenschaftliche arbeit'],
+    answer: `<strong>Facharbeit in Q1:</strong><br><br>
+      📝 Umfang: <strong>8–12 DIN-A4-Seiten</strong> · wissenschaftlich verfasst<br>
+      🗓️ Typischerweise in Q1 · ersetzt eine Klausur im gewählten Fach<br>
+      📊 Zählt wie eine Klausurnote<br><br>
+      <strong>Befreiung möglich</strong> bei Projektkurs-Belegung!<br><br>
+      Tipp: Wähle ein Fach, in dem du sowieso gut bist — die Facharbeit kann die Note deutlich verbessern`
+  },
+  {
+    keys: ['sport', 'sport abitur', 'sport lk'],
+    answer: `<strong>Sport in der Oberstufe:</strong><br><br>
+      🏃 Sport ist durchgehend bis Abitur Pflichtfach<br>
+      → Keine Klausurpflicht (Bewertung: Praxis + Theorie)<br><br>
+      ✅ Als Abiturfach (4. Fach, mündlich) möglich<br>
+      ❌ Nicht gleichzeitig mit Religion als Abiturfach<br>
+      ❌ Kein Leistungskurs möglich (an den meisten Schulen)`
+  },
+  {
+    keys: ['wochenstunden', 'stundenplan', 'wie viele kurse', 'kurse belegen'],
     answer: `<strong>Stunden & Kurse im Überblick:</strong><br><br>
-      📊 EF: Ø <strong>34 Wochenstunden</strong>, min. 11 Kurse<br>
-      📊 Q-Phase: Ø <strong>34 Wochenstunden</strong> pro Halbjahr<br>
-      📊 Gesamt: mind. <strong>102 Wochenstunden</strong> in 3 Jahren<br><br>
+      📊 EF: Ø <strong>34 Wochenstunden</strong> · min. 11 Kurse<br>
+      📊 Q-Phase: Ø <strong>34 Wochenstunden</strong> je Halbjahr<br><br>
       In Q-Phase einzubringen: <strong>35–40 Halbjahresergebnisse</strong><br>
-      (8 LK + 27–32 GK — Vertiefungsfächer zählen nicht!)`
-  },
-  {
-    keys: ['religión', 'philosophie', 'religion', 'ethik'],
-    answer: `<strong>Religion und Philosophie:</strong><br><br>
-      📖 <strong>Religionslehre</strong> (oder Philosophie als Ersatz) muss belegt werden<br>
-      ⏱️ Q-Phase: min. <strong>2 aufeinanderfolgende Halbjahre</strong> (bis Ende Q1 reicht)<br><br>
-      ⚠️ Sonderregel: Philosophie kann <u>nicht gleichzeitig</u> einziges Gesellschaftswiss.-Fach UND Ersatz für Religion sein → dann zweites GeWi-Fach nötig<br><br>
-      ❌ Religion und Sport <u>nicht gleichzeitig</u> als Abiturfächer!`
-  },
-  {
-    keys: ['ausland', 'auslandsjahr', 'austauch', 'auslandsaufenthalt'],
-    answer: `<strong>Auslandsaufenthalt:</strong><br><br>
-      🌍 Am besten in der <strong>EF</strong> (auf Antrag der Eltern)<br>
-      ✅ Bei guten Leistungen: direkter Einstieg in Q1 möglich<br>
-      📅 <strong>Eingeschobenes Jahr</strong> zwischen EF und Q1 → zählt <u>nicht</u> zur Höchstverweildauer<br>
-      ⚠️ Q2 kann <u>nicht</u> für Auslandsaufenthalt unterbrochen werden<br><br>
-      Höchstverweildauer bleibt insgesamt <strong>4 Jahre</strong> (+ ein etwaiger Auslandsaufenthalt)`
+      (8 LK-Kurse doppelt + 27–32 GK-Kurse einfach)<br><br>
+      ⚠️ Vertiefungsfächer zählen zur Stundenzahl, aber NICHT zur Gesamtqualifikation!`
   }
 ];
 
 function getAnswer(q) {
   const lower = q.toLowerCase().trim();
-  // Score-basiertes Matching
   let best = null, bestScore = 0;
   for (const entry of KB) {
     let score = 0;
     for (const k of entry.keys) {
-      if (lower.includes(k)) score += k.split(' ').length; // längere Phrasen höher gewichten
+      if (lower.includes(k)) score += k.split(' ').length;
     }
     if (score > bestScore) { bestScore = score; best = entry; }
   }
   if (best && bestScore > 0) return best.answer;
-  // Fallback
-  return `Zu dieser Frage habe ich leider keine gespeicherte Antwort. 🤔<br><br>
-    Versuche eine der Schnell-Fragen oben, oder wähle ein Thema:<br>
-    <span class="tag" onclick="sendChip('Welche Fächer sind Pflicht?')" style="cursor:pointer">Pflichtfächer</span>
-    <span class="tag" onclick="sendChip('Was ist der Schwerpunkt?')" style="cursor:pointer">Schwerpunkt</span>
-    <span class="tag" onclick="sendChip('Wie wird die Abiturnote berechnet?')" style="cursor:pointer">Abiturnote</span>`;
+  return `Dazu habe ich noch keine gespeicherte Antwort. 🤔<br><br>
+    Wähle ein Thema:<br>
+    <span class="tag" data-chip="Welche Fächer sind Pflicht?">Pflichtfächer</span>
+    <span class="tag" data-chip="Was ist der Schwerpunkt?">Schwerpunkt</span>
+    <span class="tag" data-chip="GeSHat Schulregeln">GeSHat-Regeln</span>
+    <span class="tag" data-chip="Wie wird die Abiturnote berechnet?">Abiturnote</span>
+    <span class="tag" data-chip="Was ist das Latinum?">Latinum</span>
+    <span class="tag" data-chip="Was ist die Fachhochschulreife?">FHR</span>`;
 }
 
 function addMsg(text, who) {
@@ -807,6 +909,10 @@ function addMsg(text, who) {
   const div = document.createElement('div');
   div.className = 'msg ' + who;
   div.innerHTML = text;
+  div.querySelectorAll('[data-chip]').forEach(el => {
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', () => sendChip(el.getAttribute('data-chip')));
+  });
   msgs.appendChild(div);
   msgs.scrollTop = msgs.scrollHeight;
 }
@@ -828,62 +934,62 @@ function sendChip(text) {
 
 function handleKey(e) {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-  // Auto-resize
   const ta = e.target;
   ta.style.height = 'auto';
   ta.style.height = Math.min(ta.scrollHeight, 100) + 'px';
 }
 
 // ============================================================
-// FÄCHERWAHL-ASSISTENT
+// FÄCHERWAHL-ASSISTENT (erweitert mit GeSHat-Regeln)
 // ============================================================
 const QUESTIONS = [
   {
     id: 'sek1fs2',
-    text: 'Hast du in der Sek I eine zweite Fremdsprache gelernt?',
+    text: 'Welche zweite Fremdsprache hattest du in der Sek I?',
     options: [
-      { icon: '✅', text: 'Ja, ab Klasse 6/7 (über 4 Jahre)', value: 'ja_lang' },
-      { icon: '🔶', text: 'Ja, aber erst ab Klasse 8/9', value: 'ja_kurz' },
-      { icon: '❌', text: 'Nein, nur Englisch', value: 'nein' }
+      { icon: '🇫🇷', text: 'Französisch ab Kl. 7', value: 'franz' },
+      { icon: '🇮🇹', text: 'Italienisch ab Kl. 6', value: 'ital' },
+      { icon: '🏛️', text: 'Latein (ab Kl. 6 oder später)', value: 'latein' },
+      { icon: '❌', text: 'Keine zweite Fremdsprache', value: 'nein' }
     ]
   },
   {
     id: 'schwerpunkt',
-    text: 'Wo liegen deine Stärken und Interessen?',
+    text: 'Was interessiert dich mehr?',
     options: [
-      { icon: '📚', text: 'Sprachen (Englisch, Französisch, Spanisch...)', value: 'sprache' },
-      { icon: '🔬', text: 'MINT (Mathe, Bio, Chemie, Physik, Informatik)', value: 'mint' },
-      { icon: '🌍', text: 'Gesellschaft, Geschichte, Sozialwissenschaften', value: 'geswi' },
+      { icon: '📚', text: 'Sprachen & Literatur', value: 'sprache' },
+      { icon: '🔬', text: 'Naturwiss. & Mathematik', value: 'mint' },
+      { icon: '🌍', text: 'Gesellschaft & Geschichte', value: 'geswi' },
       { icon: '🤷', text: 'Noch unsicher', value: 'unklar' }
     ]
   },
   {
-    id: 'lk',
-    text: 'In welchem Fach kannst du dir einen Leistungskurs vorstellen?',
+    id: 'informatik_erdkunde',
+    text: 'GeSHat-Frage: Informatik oder Erdkunde? (Nur eines möglich!)',
     options: [
-      { icon: '🗣️', text: 'Deutsch', value: 'deutsch' },
-      { icon: '🌐', text: 'Fremdsprache (Englisch, Französisch...)', value: 'fremdsprache' },
-      { icon: '📐', text: 'Mathematik', value: 'mathe' },
-      { icon: '🧬', text: 'Naturwissenschaft (Bio/Chemie/Physik)', value: 'nawi' },
-      { icon: '📖', text: 'Geschichte oder Sozialwissenschaften', value: 'geswi' }
+      { icon: '💻', text: 'Informatik — Technik interessiert mich', value: 'informatik' },
+      { icon: '🌍', text: 'Erdkunde — Geographie liegt mir mehr', value: 'erdkunde' },
+      { icon: '😐', text: 'Keines davon wichtig', value: 'keins' }
     ]
   },
   {
-    id: 'latein',
-    text: 'Hast du Latein in der Sek I belegt?',
+    id: 'lk',
+    text: 'In welchem Bereich kannst du dir einen Leistungskurs vorstellen?',
     options: [
-      { icon: '📜', text: 'Ja, ab Klasse 5/6', value: 'ja_lang' },
-      { icon: '📜', text: 'Ja, aber erst ab Klasse 8/9', value: 'ja_kurz' },
-      { icon: '❌', text: 'Nein', value: 'nein' }
+      { icon: '🗣️', text: 'Deutsch', value: 'deutsch' },
+      { icon: '🌐', text: 'Fremdsprache', value: 'fremdsprache' },
+      { icon: '📐', text: 'Mathematik', value: 'mathe' },
+      { icon: '🧬', text: 'Naturwissenschaft', value: 'nawi' },
+      { icon: '📖', text: 'Geschichte / SoWi', value: 'geswi' }
     ]
   },
   {
     id: 'abiturplan',
-    text: 'Was hast du nach dem Abitur im Sinn?',
+    text: 'Was hast du nach dem Abitur geplant?',
     options: [
-      { icon: '🎓', text: 'Studium (Natur- oder Ingenieurwiss.)', value: 'mint_studium' },
-      { icon: '🎓', text: 'Studium (Sprachen, Geistes-, Sozialwiss.)', value: 'geist_studium' },
-      { icon: '🏢', text: 'Ausbildung oder duales Studium', value: 'ausbildung' },
+      { icon: '🎓', text: 'MINT-Studium (Medizin, Ing., Informatik...)', value: 'mint_studium' },
+      { icon: '🎓', text: 'Geistes-/Sozialwiss. Studium', value: 'geist_studium' },
+      { icon: '🏢', text: 'Ausbildung / duales Studium', value: 'ausbildung' },
       { icon: '🤷', text: 'Noch offen', value: 'offen' }
     ]
   }
@@ -907,7 +1013,6 @@ function renderStepDots() {
     dot.className = 'step-dot' + (i < currentStep ? ' done' : '') + (i === currentStep ? ' active' : '');
     ind.appendChild(dot);
   });
-  // result dot
   const rdot = document.createElement('div');
   rdot.className = 'step-dot' + (currentStep >= QUESTIONS.length ? ' active' : '');
   ind.appendChild(rdot);
@@ -921,17 +1026,20 @@ function renderStep() {
   cont.innerHTML = `
     <div class="question-block">
       <div class="question-text">${currentStep + 1}/${QUESTIONS.length} — ${q.text}</div>
-      <div class="options-grid">
-        ${q.options.map(o => `
-          <button class="option-btn" onclick="selectOption('${q.id}','${o.value}')">
-            <span class="option-icon">${o.icon}</span>
-            <span>${o.text}</span>
-          </button>
-        `).join('')}
-      </div>
+      <div class="options-grid" id="optGrid"></div>
     </div>
-    ${currentStep > 0 ? `<button class="action-btn secondary" onclick="goBack()">← Zurück</button>` : ''}
+    ${currentStep > 0 ? `<button class="action-btn secondary" id="backBtn">← Zurück</button>` : ''}
   `;
+  const grid = document.getElementById('optGrid');
+  q.options.forEach(o => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-icon">${o.icon}</span><span>${o.text}</span>`;
+    btn.addEventListener('click', () => selectOption(q.id, o.value));
+    grid.appendChild(btn);
+  });
+  const back = document.getElementById('backBtn');
+  if (back) back.addEventListener('click', goBack);
 }
 
 function selectOption(qId, val) {
@@ -951,18 +1059,19 @@ function goBack() {
 function renderResult() {
   const cont = document.getElementById('faecherContent');
   const items = buildRecommendation();
-  cont.innerHTML = `
-    <div class="result-box">
-      <div class="result-title">🎯 Deine persönliche Empfehlung</div>
-      ${items.map(it => `
-        <div class="result-item">
-          <span class="result-badge ${it.cls}">${it.badge}</span>
-          <div class="result-text"><strong>${it.title}</strong><br>${it.desc}</div>
-        </div>
-      `).join('')}
-    </div>
-    <button class="action-btn" onclick="initFaecher()">↺ Neu starten</button>
-  `;
+  let html = `<div class="result-box"><div class="result-title">🎯 Deine persönliche Empfehlung (GeSHat)</div>`;
+  items.forEach(it => {
+    html += `<div class="result-item">
+      <span class="result-badge ${it.cls}">${it.badge}</span>
+      <div class="result-text"><strong>${it.title}</strong><br>${it.desc}</div>
+    </div>`;
+  });
+  html += `</div>`;
+  html += `<button class="action-btn" id="restartBtn">↺ Neu starten</button>`;
+  html += `<button class="action-btn secondary" id="toProfilBtn">→ Vollständiger Belegungsplan</button>`;
+  cont.innerHTML = html;
+  document.getElementById('restartBtn').addEventListener('click', initFaecher);
+  document.getElementById('toProfilBtn').addEventListener('click', () => showSection('profil'));
 }
 
 function buildRecommendation() {
@@ -974,43 +1083,276 @@ function buildRecommendation() {
   const isSprache = a.schwerpunkt === 'sprache' || a.lk === 'fremdsprache' || a.abiturplan === 'geist_studium';
 
   if (isMint && !isSprache) {
-    items.push({ badge: 'EMPFEHLUNG', cls: 'badge-info', title: 'Naturwissenschaftlicher Schwerpunkt', desc: '2 MINT-Fächer durchgängig wählen (z.B. Bio + Chemie, oder Mathe + Physik). Nur 1 Fremdsprache nötig.' });
+    items.push({ badge: 'SCHWERPUNKT', cls: 'badge-info', title: 'Naturwiss. Schwerpunkt empfohlen', desc: '2 MINT-Fächer durchgängig (z.B. Bio+Chemie oder Bio+Physik). Nur 1 Fremdsprache verpflichtend.' });
   } else if (isSprache && !isMint) {
-    items.push({ badge: 'EMPFEHLUNG', cls: 'badge-info', title: 'Sprachlicher Schwerpunkt', desc: '2 Fremdsprachen durchgängig wählen. Nur 1 Naturwissenschaft verpflichtend.' });
+    items.push({ badge: 'SCHWERPUNKT', cls: 'badge-info', title: 'Sprachlicher Schwerpunkt empfohlen', desc: '2 Fremdsprachen durchgängig. Nur 1 Naturwiss. verpflichtend. Klausurpflicht NW entfällt in Q-Phase.' });
   } else {
-    items.push({ badge: 'TIPP', cls: 'badge-info', title: 'Schwerpunkt noch offen', desc: 'Sprich mit deiner Beratungslehrkraft. Beide Richtungen sind möglich — die Entscheidung legt deinen Abi-Weg fest!' });
+    items.push({ badge: 'SCHWERPUNKT', cls: 'badge-info', title: 'Schwerpunkt noch offen', desc: 'Beide Richtungen sind möglich. Sprich mit deiner Beratungslehrkraft — diese Entscheidung legt deinen gesamten Abi-Weg fest!' });
   }
 
-  // Zweite Fremdsprache
+  // Fremdsprachen GeSHat
   if (a.sek1fs2 === 'nein') {
-    items.push({ badge: 'PFLICHT', cls: 'badge-muss', title: 'Neue Fremdsprache nötig!', desc: 'Da du in Sek I keine zweite Fremdsprache hattest, musst du in der EF eine neu einsetzende Fremdsprache beginnen (4-stündig, bis Abi).' });
-  } else if (a.sek1fs2 === 'ja_kurz') {
-    items.push({ badge: 'PFLICHT', cls: 'badge-muss', title: 'Zweite Fremdsprache bis EF-Ende', desc: 'Da du die zweite Fremdsprache erst spät (ab Klasse 8/9) begonnen hast, musst du sie mindestens bis Ende der EF fortführen.' });
+    items.push({ badge: 'PFLICHT', cls: 'badge-muss', title: 'Neue Fremdsprache in EF nötig!', desc: 'Ohne zweite FS aus Sek I musst du in der EF eine neu einsetzende Fremdsprache beginnen (4-stündig, bis Abitur, kein LK möglich).' });
+  } else if (a.sek1fs2 === 'franz') {
+    items.push({ badge: 'HINWEIS', cls: 'badge-soll', title: 'Französisch: Bis Ende EF Pflicht', desc: 'Französisch (ab Kl. 7) muss bis Ende der EF belegt werden. Ab Q1 kannst du es abwählen — es sei denn, du brauchst es für den sprachlichen Schwerpunkt.' });
+  } else if (a.sek1fs2 === 'ital') {
+    items.push({ badge: 'PFLICHT', cls: 'badge-muss', title: 'Italienisch: Durchgängig bis Abitur!', desc: 'Italienisch (ab Kl. 6) muss an der GeSHat die gesamte Sek II durchgehalten werden — außer du hast Französisch ab Kl. 10 gewählt.' });
+  } else if (a.sek1fs2 === 'latein') {
+    items.push({ badge: 'HINWEIS', cls: 'badge-soll', title: 'Latein: Bis Ende EF Pflicht', desc: 'Latein muss bis Ende der EF belegt werden. Du kannst dann das Latinum erwerben. Danach ist Latein freiwillig als dritte Fremdsprache.' });
   }
 
-  // Latein
-  if (a.latein === 'ja_lang') {
-    items.push({ badge: 'HINWEIS', cls: 'badge-soll', title: 'Latein: Bis Ende EF Pflicht', desc: 'Latein musst du bis Ende der EF belegen. Danach kann es freiwillig weitergeführt werden (als 3. Fremdsprache). Das Latinum erwirbst du dabei automatisch bei ausreichenden Leistungen.' });
+  // Informatik/Erdkunde
+  if (a.informatik_erdkunde === 'informatik') {
+    items.push({ badge: '⚠️ AUSSCHLUSS', cls: 'badge-muss', title: 'Informatik gewählt → kein Erdkunde!', desc: 'An der GeSHat schließen sich Informatik und Erdkunde aus. Du kannst nur Informatik belegen. Erdkunde fällt komplett weg.' });
+  } else if (a.informatik_erdkunde === 'erdkunde') {
+    items.push({ badge: '⚠️ AUSSCHLUSS', cls: 'badge-muss', title: 'Erdkunde gewählt → kein Informatik!', desc: 'An der GeSHat schließen sich Informatik und Erdkunde aus. Du kannst nur Erdkunde belegen.' });
   }
 
-  // LK-Empfehlung
-  if (a.lk && a.lk !== 'geswi') {
-    const lkMap = { deutsch: 'Deutsch', fremdsprache: 'Fremdsprache', mathe: 'Mathematik', nawi: 'Bio/Chemie/Physik' };
-    items.push({ badge: 'LK-TIPP', cls: 'badge-kann', title: `Leistungskurs ${lkMap[a.lk] || ''}`, desc: `Dein gewünschter LK-Bereich passt! Achte darauf, das Fach ab EF durchgehend schriftlich zu belegen.` });
-  }
-  if (a.lk === 'geswi') {
-    items.push({ badge: 'HINWEIS', cls: 'badge-soll', title: 'Geschichte/SoWi als LK', desc: 'Möglich als 2. LK. Als 1. LK muss es Deutsch, Mathe, eine fortgeführte Fremdsprache oder eine Naturwiss. sein.' });
+  // LK
+  const lkMap = { deutsch: 'Deutsch', fremdsprache: 'Fremdsprache (fortgeführt)', mathe: 'Mathematik', nawi: 'Bio / Chemie / Physik', geswi: 'Geschichte oder SoWi' };
+  if (a.lk) {
+    const lkHinweis = a.lk === 'geswi' ? ' ⚠️ Achtung: Als 1. LK muss Deutsch, Mathe, fortg. FS oder NaWi gewählt werden — Geschichte/SoWi nur als 2. LK!' : '';
+    items.push({ badge: 'LK-TIPP', cls: 'badge-kann', title: `Leistungskurs: ${lkMap[a.lk]}`, desc: `Fach ab EF durchgehend schriftlich belegen.${lkHinweis}` });
   }
 
-  // Studiumsziel
-  if (a.abiturplan === 'mint_studium') {
-    items.push({ badge: 'STUDIUM', cls: 'badge-kann', title: 'Für MINT-Studium: Mathe & NaWi stark', desc: 'Plane Mathe und eine Naturwiss. als Abiturfächer. Achte auf gute Punkte in beiden LK — viele MINT-Studiengänge haben NC oder Eignungsprüfungen.' });
-  }
+  // Pflicht Vertiefung
+  items.push({ badge: 'PFLICHT', cls: 'badge-muss', title: 'Vertiefung Deutsch + Mathe (GeSHat)', desc: 'Je 1 Halbjahr Vertiefungskurs in Deutsch und Mathematik sind an der GeSHat Pflicht. Zählen aber NICHT zur Gesamtqualifikation!' });
 
-  // Allgemeine Hinweise
-  items.push({ badge: 'IMMER', cls: 'badge-muss', title: 'Alle 3 Aufgabenfelder im Abitur', desc: 'Deine 4 Abiturfächer müssen AF I (sprachlich-künstlerisch), AF II (gesellschaftswiss.) und AF III (MINT) abdecken. 2 davon müssen Deutsch, Mathe oder eine Fremdsprache sein.' });
+  // AF-Check
+  items.push({ badge: 'CHECK', cls: 'badge-soll', title: 'Alle 3 Aufgabenfelder prüfen', desc: 'Deine 4 Abiturfächer müssen AF I (Deutsch/FS), AF II (GeWi) und AF III (MINT) abdecken. Plane das jetzt — im Vollständigen Belegungsplan unten!' });
 
   return items;
+}
+
+// ============================================================
+// PROFIL & BELEGUNGSPLAN (NEU)
+// ============================================================
+function initProfil() {
+  window.profilInit = true;
+  renderProfilForm();
+}
+
+function renderProfilForm() {
+  const cont = document.getElementById('profilContent');
+  cont.innerHTML = `
+    <div class="section-head">
+      <h2>Belegungs-<br>plan</h2>
+      <p>Gib dein Fächerprofil ein — du bekommst einen vollständigen Belegungsplan mit Konflikt-Check.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">👤 Dein Profil</div>
+
+      <div class="input-group" style="margin-bottom:12px">
+        <label class="input-label">Zweite Fremdsprache (Sek I)</label>
+        <select id="p_fs2" class="score-input" style="text-align:left;font-family:'Instrument Sans',sans-serif">
+          <option value="">— bitte wählen —</option>
+          <option value="franz">Französisch (ab Kl. 7)</option>
+          <option value="ital">Italienisch (ab Kl. 6)</option>
+          <option value="latein">Latein</option>
+          <option value="nein">Keine</option>
+        </select>
+      </div>
+
+      <div class="input-group" style="margin-bottom:12px">
+        <label class="input-label">Schwerpunkt</label>
+        <select id="p_schwerpunkt" class="score-input" style="text-align:left;font-family:'Instrument Sans',sans-serif">
+          <option value="">— bitte wählen —</option>
+          <option value="sprache">Sprachlich (2 Fremdsprachen)</option>
+          <option value="mint">Naturwiss. (2 MINT-Fächer)</option>
+        </select>
+      </div>
+
+      <div class="input-group" style="margin-bottom:12px">
+        <label class="input-label">2. MINT-Fach (bei naturwiss. Schwerpunkt)</label>
+        <select id="p_mint2" class="score-input" style="text-align:left;font-family:'Instrument Sans',sans-serif">
+          <option value="">— nicht relevant / nicht gewählt —</option>
+          <option value="bio">Biologie</option>
+          <option value="chemie">Chemie</option>
+          <option value="physik">Physik</option>
+          <option value="informatik">Informatik</option>
+        </select>
+      </div>
+
+      <div class="input-group" style="margin-bottom:12px">
+        <label class="input-label">Informatik oder Erdkunde? (GeSHat: nur eines!)</label>
+        <select id="p_inferd" class="score-input" style="text-align:left;font-family:'Instrument Sans',sans-serif">
+          <option value="">— keines / noch offen —</option>
+          <option value="informatik">Informatik</option>
+          <option value="erdkunde">Erdkunde</option>
+        </select>
+      </div>
+
+      <div class="input-group" style="margin-bottom:12px">
+        <label class="input-label">Geplanter 1. Leistungskurs</label>
+        <select id="p_lk1" class="score-input" style="text-align:left;font-family:'Instrument Sans',sans-serif">
+          <option value="">— noch offen —</option>
+          <option value="deutsch">Deutsch</option>
+          <option value="englisch">Englisch</option>
+          <option value="mathe">Mathematik</option>
+          <option value="bio">Biologie</option>
+          <option value="chemie">Chemie</option>
+          <option value="physik">Physik</option>
+          <option value="fs_fort">Andere fortgeführte Fremdsprache</option>
+        </select>
+      </div>
+
+      <div class="input-group" style="margin-bottom:16px">
+        <label class="input-label">Geplanter 2. Leistungskurs</label>
+        <select id="p_lk2" class="score-input" style="text-align:left;font-family:'Instrument Sans',sans-serif">
+          <option value="">— noch offen —</option>
+          <option value="deutsch">Deutsch</option>
+          <option value="englisch">Englisch</option>
+          <option value="mathe">Mathematik</option>
+          <option value="bio">Biologie</option>
+          <option value="chemie">Chemie</option>
+          <option value="physik">Physik</option>
+          <option value="geschichte">Geschichte</option>
+          <option value="sowi">Sozialwissenschaften</option>
+          <option value="fs_fort">Andere fortgeführte Fremdsprache</option>
+        </select>
+      </div>
+
+      <button class="action-btn" id="calcProfilBtn">📋 Belegungsplan erstellen</button>
+    </div>
+    <div id="profilResult"></div>
+  `;
+  document.getElementById('calcProfilBtn').addEventListener('click', calcProfil);
+}
+
+function calcProfil() {
+  const fs2 = document.getElementById('p_fs2').value;
+  const schwerpunkt = document.getElementById('p_schwerpunkt').value;
+  const mint2 = document.getElementById('p_mint2').value;
+  const inferd = document.getElementById('p_inferd').value;
+  const lk1 = document.getElementById('p_lk1').value;
+  const lk2 = document.getElementById('p_lk2').value;
+
+  const konflikte = [];
+  const pflicht = [];
+  const empfehlungen = [];
+  const warnungen = [];
+
+  // Konflikt-Check
+  if (inferd === 'informatik' && mint2 === 'informatik') {
+    // ok — konsistent
+  }
+  if (inferd === 'informatik' || mint2 === 'informatik') {
+    konflikte.push({ title: '✅ Informatik gewählt', desc: 'Erdkunde kann NICHT belegt werden (GeSHat-Regel).', cls: 'badge-muss' });
+  }
+  if (inferd === 'erdkunde') {
+    konflikte.push({ title: '✅ Erdkunde gewählt', desc: 'Informatik kann NICHT belegt werden (GeSHat-Regel).', cls: 'badge-muss' });
+  }
+  if (lk1 && lk1 === lk2) {
+    warnungen.push('⚠️ LK1 und LK2 dürfen nicht dasselbe Fach sein!');
+  }
+  if (lk1 === 'geschichte' || lk1 === 'sowi') {
+    warnungen.push('⚠️ Geschichte/SoWi kann nur 2. LK sein, nicht 1. LK!');
+  }
+  if (schwerpunkt === 'mint' && (!mint2 || mint2 === '')) {
+    warnungen.push('⚠️ Naturwiss. Schwerpunkt gewählt, aber kein 2. MINT-Fach angegeben!');
+  }
+
+  // Pflichtbelegungen aufbauen
+  pflicht.push({ fach: 'Deutsch', ef: '✏️ schriftl.', q: '✏️ schriftl.' });
+  pflicht.push({ fach: 'Mathematik', ef: '✏️ schriftl.', q: '✏️ schriftl.' });
+  pflicht.push({ fach: 'Englisch (fortg. FS)', ef: '✏️ schriftl.', q: schwerpunkt === 'sprache' ? '✏️ schriftl.' : '✏️ schriftl.' });
+
+  if (fs2 === 'ital') pflicht.push({ fach: 'Italienisch', ef: '✏️ schriftl.', q: '✏️ durchgehend Pflicht!' });
+  if (fs2 === 'franz') pflicht.push({ fach: 'Französisch', ef: '✏️ bis EF-Ende', q: schwerpunkt === 'sprache' ? '✏️ weiter (Schwerpunkt)' : '📌 kann abgewählt werden' });
+  if (fs2 === 'latein') pflicht.push({ fach: 'Latein', ef: '📌 bis EF-Ende', q: '➕ freiwillig (→ Latinum)' });
+  if (fs2 === 'nein') pflicht.push({ fach: '⚠️ Neue FS (4-stündig)', ef: '✏️ Pflicht', q: '✏️ bis Abitur' });
+
+  pflicht.push({ fach: 'Geschichte oder SoWi', ef: '✏️ mind. 1 davon', q: '📌 nach Bedarf' });
+  pflicht.push({ fach: 'Eine Naturwiss. (Bio/Chemie/Physik)', ef: '✏️ schriftl.', q: schwerpunkt === 'sprache' ? '📌 Klausurpflicht entfällt bei 2 FS' : '✏️ schriftl.' });
+
+  if (schwerpunkt === 'mint' && mint2) {
+    const mintMap = { bio: 'Biologie', chemie: 'Chemie', physik: 'Physik', informatik: 'Informatik' };
+    pflicht.push({ fach: `2. MINT: ${mintMap[mint2] || mint2}`, ef: '✏️ schriftl.', q: '✏️ durchgehend' });
+  }
+  if (schwerpunkt === 'sprache') {
+    pflicht.push({ fach: '2. Fremdsprache (Schwerpunkt)', ef: '✏️ schriftl.', q: '✏️ durchgehend' });
+  }
+
+  pflicht.push({ fach: 'Religion / Philosophie', ef: '📌', q: '📌 mind. bis Q1-Ende' });
+  pflicht.push({ fach: 'Sport', ef: '📌', q: '📌 durchgehend' });
+  pflicht.push({ fach: 'Vertiefung Deutsch (GeSHat)', ef: '📌 1 HJ', q: '' });
+  pflicht.push({ fach: 'Vertiefung Mathe (GeSHat)', ef: '📌 1 HJ', q: '' });
+
+  if (inferd === 'erdkunde') empfehlungen.push('➕ Erdkunde als Zusatz wählbar (keine Pflicht, kein AF-Erfüller)');
+  if (inferd === 'informatik') empfehlungen.push('➕ Informatik als Zusatz wählbar (kein AF-Erfüller)');
+
+  // Ergebnis rendern
+  const res = document.getElementById('profilResult');
+  let html = '';
+
+  if (warnungen.length) {
+    html += `<div class="card" style="border-color:var(--red);margin-top:14px">
+      <div class="card-title" style="color:var(--red)">⚠️ Konflikte erkannt</div>
+      ${warnungen.map(w => `<div class="tip-row"><span class="tip-icon">🚨</span><span>${w}</span></div>`).join('')}
+    </div>`;
+  }
+
+  if (konflikte.length) {
+    html += `<div class="card" style="margin-top:14px">
+      <div class="card-title">🔒 GeSHat-Ausschlussregeln</div>
+      ${konflikte.map(k => `<div class="result-item">
+        <span class="result-badge ${k.cls}">${k.title.split(' ')[0]}</span>
+        <div class="result-text"><strong>${k.title.replace(/^[^ ]+ /,'')}</strong><br>${k.desc}</div>
+      </div>`).join('')}
+    </div>`;
+  }
+
+  html += `<div class="card" style="margin-top:14px">
+    <div class="card-title">📋 Dein Belegungsplan</div>
+    <div style="font-size:0.75rem;color:var(--text2);margin-bottom:10px;font-family:'DM Mono',monospace">
+      ✏️ schriftl. = Klausurpflicht &nbsp;|&nbsp; 📌 = Pflicht ohne Klausur &nbsp;|&nbsp; ➕ = Optional
+    </div>`;
+
+  pflicht.forEach(p => {
+    html += `<div class="result-item">
+      <div class="result-text" style="width:100%">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px">
+          <strong>${p.fach}</strong>
+          <div style="display:flex;gap:8px;font-size:0.75rem;font-family:'DM Mono',monospace">
+            ${p.ef ? `<span style="color:var(--text2)">EF: ${p.ef}</span>` : ''}
+            ${p.q ? `<span style="color:var(--accent)">Q: ${p.q}</span>` : ''}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  if (empfehlungen.length) {
+    empfehlungen.forEach(e => {
+      html += `<div class="tip-row"><span class="tip-icon">➕</span><span style="color:var(--green)">${e}</span></div>`;
+    });
+  }
+
+  html += `</div>`;
+
+  // AF-Check
+  html += `<div class="card" style="margin-top:14px">
+    <div class="card-title">🎯 Aufgabenfeld-Check (Abitur)</div>
+    <div class="tip-row">
+      <span class="tip-icon">${lk1 === 'deutsch' || lk1 === 'englisch' || lk1 === 'fs_fort' ? '✅' : '⚠️'}</span>
+      <span><strong>AF I</strong> (Deutsch/FS): ${lk1 === 'deutsch' ? 'Deutsch ✓' : lk1 === 'englisch' || lk1 === 'fs_fort' ? 'Fremdsprache ✓' : 'Noch kein Abi-Fach aus AF I geplant!'}</span>
+    </div>
+    <div class="tip-row">
+      <span class="tip-icon">${lk2 === 'geschichte' || lk2 === 'sowi' ? '✅' : '⚠️'}</span>
+      <span><strong>AF II</strong> (GeWi): ${lk2 === 'geschichte' ? 'Geschichte ✓' : lk2 === 'sowi' ? 'SoWi ✓' : 'Noch kein GeWi-Fach als Abi-Fach geplant!'}</span>
+    </div>
+    <div class="tip-row">
+      <span class="tip-icon">${lk1 === 'mathe' || lk1 === 'bio' || lk1 === 'chemie' || lk1 === 'physik' || lk2 === 'mathe' || lk2 === 'bio' || lk2 === 'chemie' || lk2 === 'physik' ? '✅' : '⚠️'}</span>
+      <span><strong>AF III</strong> (MINT): ${lk1 === 'mathe' || lk2 === 'mathe' ? 'Mathe ✓' : lk1 === 'bio'||lk2==='bio' ? 'Bio ✓' : lk1==='chemie'||lk2==='chemie' ? 'Chemie ✓' : lk1==='physik'||lk2==='physik' ? 'Physik ✓' : 'Noch kein MINT-Fach als Abi-Fach geplant!'}</span>
+    </div>
+    <div style="font-size:0.78rem;color:var(--text2);margin-top:8px">
+      3. und 4. Abiturfach ergänzen, um alle AF abzudecken!
+    </div>
+  </div>`;
+
+  res.innerHTML = html;
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // ============================================================
@@ -1031,11 +1373,11 @@ const KLAUSUR_DATA = {
   },
   EF2: {
     title: 'Einführungsphase — 2. Halbjahr',
-    sub: '⭐ Enthält zentrale Klausuren (ZKE) in Deutsch + Mathe!',
+    sub: '⭐ Zentrale Klausuren: Deutsch 1. Juni · Mathe 4. Juni 2026',
     items: [
       { fach: 'Deutsch', info: '2. Klausur ZENTRAL (1. Juni 2026) · 90 Min.', typ: 'pflicht' },
       { fach: 'Mathematik', info: '2. Klausur ZENTRAL (4. Juni 2026) · 90 Min.', typ: 'pflicht' },
-      { fach: 'Alle Fremdsprachen', info: '2 Klausuren je · optional: 1 mündl. ersetzt 1 Klausur', typ: 'pflicht' },
+      { fach: 'Alle Fremdsprachen', info: '2 Klausuren je · optional 1 → mündlich', typ: 'pflicht' },
       { fach: 'Gesellschaftswiss. (1 Fach)', info: '1–2 Klausuren', typ: 'pflicht' },
       { fach: 'Naturwiss. (1 Fach)', info: '1–2 Klausuren', typ: 'pflicht' },
       { fach: 'Weitere Fächer', info: 'Optional als Klausurfach wählbar', typ: 'wahl' }
@@ -1049,23 +1391,21 @@ const KLAUSUR_DATA = {
       { fach: '2. Leistungskurs', info: '2 Klausuren · 135–180 Min.', typ: 'pflicht' },
       { fach: 'Deutsch (GK/LK)', info: '2 Klausuren je Halbjahr', typ: 'pflicht' },
       { fach: 'Mathematik (GK/LK)', info: '2 Klausuren je Halbjahr', typ: 'pflicht' },
-      { fach: 'Fremdsprache', info: '2 Klausuren · in einem Halbjahr: mündl. Prüfung Pflicht', typ: 'pflicht' },
+      { fach: 'Fremdsprache', info: '2 Klausuren · in einem HJ: mündliche Prüfung Pflicht!', typ: 'pflicht' },
       { fach: '3./4. Abiturfach (GK)', info: '2 Klausuren · 90–135 Min.', typ: 'pflicht' },
-      { fach: 'Facharbeit (Q1)', info: 'Ersetzt 1 Klausur in einem Fach', typ: 'wahl' },
-      { fach: 'Weitere Klausurfächer', info: 'Freiwillig wählbar — empfohlen für Abi-Sicherheit', typ: 'wahl' }
+      { fach: 'Facharbeit (Q1)', info: 'Ersetzt 1 Klausur in einem Fach', typ: 'wahl' }
     ]
   },
   Q2: {
     title: 'Qualifikationsphase — Q2',
-    sub: 'Q2.2: Nur noch Vorabitur-Klausuren im 1.–3. Fach!',
+    sub: 'Q2.2: Nur Vorabitur-Klausuren im 1.–3. Fach!',
     items: [
-      { fach: '1./2. LK (Q2.1)', info: '2 Klausuren · 225 Min. (Abitur-Vorbereitung)', typ: 'pflicht' },
+      { fach: '1./2. LK (Q2.1)', info: '2 Klausuren · 225 Min.', typ: 'pflicht' },
       { fach: '3. Fach GK (Q2.1)', info: '2 Klausuren · 135–180 Min.', typ: 'pflicht' },
-      { fach: '1./2./3. Fach (Q2.2)', info: '1 Vorabitur-Klausur · Abiturbedingungen', typ: 'pflicht' },
+      { fach: '1./2./3. Fach (Q2.2)', info: '1 Vorabitur-Klausur (Abiturbedingungen)', typ: 'pflicht' },
       { fach: '4. Fach (Q2.2)', info: 'Keine Klausur — nur mündliche Abiturprüfung!', typ: 'wahl' },
-      { fach: 'Fremdsprachen', info: 'In Q1 oder Q2.1: 1 Klausur durch mündl. Prüfung ersetzt', typ: 'wahl' },
-      { fach: 'Abi schriftlich', info: '1.–3. Fach: Zentralabitur, landesweit gleicher Tag', typ: 'pflicht' },
-      { fach: 'Abi mündlich (4. Fach)', info: '30 Min. Vorbereitung + 20–30 Min. Prüfung', typ: 'pflicht' }
+      { fach: 'Zentralabitur (schriftl.)', info: '1.–3. Fach: Landesweit einheitlicher Tag', typ: 'pflicht' },
+      { fach: 'Mündliches Abitur (4. Fach)', info: '30 Min. Vorbereitung + 20–30 Min. Prüfung', typ: 'pflicht' }
     ]
   }
 };
@@ -1112,13 +1452,11 @@ function calcAbi() {
   }
   document.getElementById('calcResult').style.display = 'block';
 
-  // Block I
   const P = lkPts * 2 + gkPts;
   const S = 8 * 2 + gkAnz;
   const block1 = Math.round((P / S) * 40);
   const block1Clamped = Math.min(600, Math.max(0, block1));
 
-  // Block II
   const validAb = ab.filter(v => !isNaN(v) && v >= 0 && v <= 15);
   const block2 = validAb.length === 4 ? Math.round(ab.reduce((s,v) => s + v, 0) * 5) : null;
 
@@ -1126,15 +1464,11 @@ function calcAbi() {
   document.getElementById('block2Pts').textContent = block2 !== null ? block2 + ' Pkt' : '— Pkt';
 
   const warnings = [];
-
-  if (hasAnyBlock1) {
-    if (block1Clamped < 200) warnings.push('⚠️ Block I unter 200 Punkten — Zulassung zum Abitur nicht möglich!');
-  }
-
+  if (hasAnyBlock1 && block1Clamped < 200) warnings.push('⚠️ Block I unter 200 Punkten — Zulassung nicht möglich!');
   if (block2 !== null) {
     if (block2 < 100) warnings.push('⚠️ Block II unter 100 Punkten — Abitur nicht bestanden!');
     const above25 = ab.filter(v => v * 5 >= 25).length;
-    if (above25 < 2) warnings.push('⚠️ Mindestens 2 Fächer müssen ≥ 25 Punkte (= 5 × 5 Pkt.) erreichen!');
+    if (above25 < 2) warnings.push('⚠️ Mind. 2 Fächer müssen ≥ 25 Punkte (= 5 × 5 Pkt.) erreichen!');
     if (ab.some(v => v === 0)) warnings.push('⚠️ Kein Fach darf mit 0 Punkten abschließen!');
   }
 
@@ -1156,14 +1490,37 @@ function calcAbi() {
     noteDisplay === 'n.b.' ? 'var(--red)' :
     parseFloat(noteDisplay) <= 2.0 ? 'var(--green)' :
     parseFloat(noteDisplay) <= 3.0 ? 'var(--gold)' : 'var(--orange)';
-
   document.getElementById('abiWarnings').innerHTML = warnings.map(w =>
     `<div style="color:var(--red);margin-bottom:4px">${w}</div>`
   ).join('');
 }
 
-// Init
+// ============================================================
+// INIT
+// ============================================================
 showKlausur('EF1');
+addMsg(`<strong>Hallo! 👋</strong><br>
+  Ich bin dein OberStufenCoach — speziell für die <strong>Gesamtschule Hattingen (GeSHat)</strong>.<br><br>
+  Klick ein Thema oder stelle deine Frage:<br>
+  <span class="tag" data-chip="Welche Fächer sind Pflicht?">Pflichtfächer</span>
+  <span class="tag" data-chip="Was ist der Schwerpunkt?">Schwerpunkt</span>
+  <span class="tag" data-chip="GeSHat Schulregeln">GeSHat-Regeln</span>
+  <span class="tag" data-chip="Erdkunde und Informatik Ausschluss">Erdkunde/Info</span>
+  <span class="tag" data-chip="Welche Fremdsprachenregeln gibt es?">Fremdsprachen</span>
+  <span class="tag" data-chip="Was ist das Latinum?">Latinum</span>
+  <span class="tag" data-chip="Wie wird die Abiturnote berechnet?">Abiturnote</span>
+  <span class="tag" data-chip="Was ist die Fachhochschulreife?">FHR</span>`, 'bot');
+
+// Nav-Buttons per EventListener
+[['nav-chat','chat'],['nav-faecher','faecher'],['nav-klausur','klausur'],['nav-rechner','rechner'],['nav-profil','profil']].forEach(([id,sec]) => {
+  const btn = document.getElementById(id);
+  if (btn) btn.addEventListener('click', () => showSection(sec));
+});
+// Quick-Chips per EventListener
+document.querySelectorAll('.chip[data-chip]').forEach(el => {
+  el.addEventListener('click', () => sendChip(el.getAttribute('data-chip')));
+});
 </script>
+
 </body>
 </html>
