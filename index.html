@@ -54,13 +54,14 @@ html, body {
 }
 .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.15rem; letter-spacing: -0.02em; }
 .logo span { color: var(--gold); }
-.offline-badge {
-  font-size: 0.7rem; font-family: 'DM Mono', monospace;
-  padding: 3px 8px; border-radius: 20px;
-  background: var(--green); color: #0f1117; font-weight: 500;
-  display: none;
+.reset-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--bg3); border: 1px solid var(--border);
+  color: var(--text2); font-size: 1.1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; flex-shrink: 0;
 }
-.offline-badge.show { display: inline-block; }
+.reset-btn:hover { border-color: var(--red); color: var(--red); background: rgba(232,91,91,0.1); }
 
 /* NAV */
 .nav {
@@ -405,6 +406,7 @@ html, body {
 <div id="app">
   <header class="header">
     <div class="logo">Ober<span>Stufen</span>Coach <span style="font-size:0.7rem;color:var(--text2);font-family:'DM Mono',monospace;font-weight:400;">NRW</span><div style="font-size:0.65rem;color:var(--gold);font-family:'DM Mono',monospace;font-weight:500;letter-spacing:0.05em;margin-top:1px">Gesamtschule Hattingen</div></div>
+    <button class="reset-btn" id="resetBtn" title="Alle Eingaben löschen">↺</button>
   </header>
 
   <nav class="nav">
@@ -1533,6 +1535,117 @@ if (sendBtn) sendBtn.addEventListener('click', sendMessage);
 // toggleInfo Block1
 const t1 = document.getElementById('toggleBlock1Btn');
 if (t1) t1.addEventListener('click', () => toggleInfo('block1'));
+
+// ============================================================
+// LOCALSTORAGE — Eingaben speichern & laden
+// ============================================================
+const LS_KEY = 'oscoach_data';
+
+function saveToStorage() {
+  const data = {
+    rechner: {
+      lkPts: document.getElementById('lkPts')?.value || '',
+      gkPts: document.getElementById('gkPts')?.value || '',
+      gkAnz: document.getElementById('gkAnz')?.value || '32',
+      ab1: document.getElementById('ab1')?.value || '',
+      ab2: document.getElementById('ab2')?.value || '',
+      ab3: document.getElementById('ab3')?.value || '',
+      ab4: document.getElementById('ab4')?.value || '',
+    },
+    faecher: { ...answers },
+    faecherStep: currentStep,
+    profil: {
+      fs2: document.getElementById('p_fs2')?.value || '',
+      schwerpunkt: document.getElementById('p_schwerpunkt')?.value || '',
+      mint2: document.getElementById('p_mint2')?.value || '',
+      inferd: document.getElementById('p_inferd')?.value || '',
+      lk1: document.getElementById('p_lk1')?.value || '',
+      lk2: document.getElementById('p_lk2')?.value || '',
+    },
+    chat: document.getElementById('chatMessages')?.innerHTML || '',
+    savedAt: new Date().toISOString()
+  };
+  try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch(e) {}
+}
+
+function loadFromStorage() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch(e) { return null; }
+}
+
+function restoreState() {
+  const data = loadFromStorage();
+  if (!data) return;
+
+  // Rechner
+  if (data.rechner) {
+    ['lkPts','gkPts','gkAnz','ab1','ab2','ab3','ab4'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && data.rechner[id]) el.value = data.rechner[id];
+    });
+    calcAbi();
+  }
+
+  // Chat wiederherstellen
+  if (data.chat) {
+    const msgs = document.getElementById('chatMessages');
+    if (msgs) {
+      msgs.innerHTML = data.chat;
+      // data-chip Listener neu binden
+      msgs.querySelectorAll('[data-chip]').forEach(el => {
+        el.style.cursor = 'pointer';
+        el.addEventListener('click', () => sendChip(el.getAttribute('data-chip')));
+      });
+      msgs.scrollTop = msgs.scrollHeight;
+      document.getElementById('quickChips').style.display = 'none';
+    }
+  }
+
+  // Fächerwahl
+  if (data.faecher && Object.keys(data.faecher).length > 0) {
+    Object.assign(answers, data.faecher);
+    currentStep = data.faecherStep || Object.keys(data.faecher).length;
+    window.faecherInit = true;
+    renderStep();
+  }
+
+  // Profil — wird erst geladen wenn Tab aktiv wird
+  if (data.profil && Object.values(data.profil).some(v => v)) {
+    window._savedProfil = data.profil;
+  }
+}
+
+// Profil-Felder füllen (nach renderProfilForm)
+const _origRenderProfilForm = renderProfilForm;
+renderProfilForm = function() {
+  _origRenderProfilForm();
+  if (window._savedProfil) {
+    const p = window._savedProfil;
+    ['fs2','schwerpunkt','mint2','inferd','lk1','lk2'].forEach(id => {
+      const el = document.getElementById('p_' + id);
+      if (el && p[id]) el.value = p[id];
+    });
+  }
+};
+
+// Auto-Save bei Änderungen
+document.addEventListener('input', () => setTimeout(saveToStorage, 100));
+document.addEventListener('click', () => setTimeout(saveToStorage, 200));
+
+// Beim Laden wiederherstellen
+restoreState();
+
+// ============================================================
+// RESET — Alle Eingaben löschen
+// ============================================================
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (!confirm('Alle Eingaben löschen und neu starten?')) return;
+  localStorage.removeItem(LS_KEY);
+  location.reload();
+});
 
 </script>
 
