@@ -405,7 +405,6 @@ html, body {
 <div id="app">
   <header class="header">
     <div class="logo">Ober<span>Stufen</span>Coach <span style="font-size:0.7rem;color:var(--text2);font-family:'DM Mono',monospace;font-weight:400;">NRW</span><div style="font-size:0.65rem;color:var(--gold);font-family:'DM Mono',monospace;font-weight:500;letter-spacing:0.05em;margin-top:1px">Gesamtschule Hattingen</div></div>
-    <span class="offline-badge" id="offlineBadge">✓ Offline</span>
   </header>
 
   <nav class="nav">
@@ -645,9 +644,7 @@ function toggleInfo(id) {
 // SERVICE WORKER
 // ============================================================
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').then(() => {
-    document.getElementById('offlineBadge').classList.add('show');
-  });
+  navigator.serviceWorker.register('sw.js');
 }
 window.addEventListener('offline', () => showToast('📴 Offline — App funktioniert weiter!'));
 window.addEventListener('online', () => showToast('🌐 Wieder online'));
