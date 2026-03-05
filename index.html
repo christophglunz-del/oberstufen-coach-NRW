@@ -1904,7 +1904,10 @@ function renderAuswertung() {
 
   // Datum-Zeile
   html += `<div style="margin-top:20px;font-size:0.78rem;color:var(--text2);text-align:center;line-height:1.6">
-    Erstellt am ${datum} mit OberStufenCoach NRW v${APP_VERSION} durch <a href="mailto:christoph@glunz.org">christoph@glunz.org</a>
+    Erstellt am ${datum} mit OberStufenCoach NRW v${APP_VERSION} — <a href="mailto:christoph@glunz.org">christoph@glunz.org</a>
+  </div>`;
+  html += `<div style="margin-top:10px;font-size:0.68rem;color:var(--text2);text-align:center;line-height:1.5;opacity:0.7">
+    Dieses Tool dient nur zur Orientierung und ersetzt keine offizielle Beratung. Alle Angaben ohne Gewähr.
   </div>`;
 
   cont.innerHTML = html;
