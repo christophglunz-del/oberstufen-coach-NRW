@@ -415,6 +415,7 @@ html, body {
     <button class="nav-btn" id="nav-klausur">📅 Klausuren</button>
     <button class="nav-btn" id="nav-rechner">🧮 Notenrechner</button>
     <button class="nav-btn" id="nav-profil">🗂️ Belegung</button>
+    <button class="nav-btn" id="nav-quellen">📎 Quellen</button>
   </nav>
 
   <div class="content">
@@ -601,6 +602,45 @@ html, body {
     <!-- ===== BELEGUNGSPLAN ===== -->
     <div class="section" id="section-profil">
       <div id="profilContent"></div>
+    </div>
+
+    <!-- ===== QUELLEN ===== -->
+    <div class="section" id="section-quellen">
+      <div class="section-head">
+        <h2>Quellen &<br>Grundlagen</h2>
+        <p>Diese App basiert auf folgenden offiziellen Dokumenten.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🏫 Schulspezifisch</div>
+        <div class="result-text" style="font-size:0.88rem;line-height:1.6">
+          <strong>Fachwahlplanungshilfe — Gesamtschule Hattingen</strong><br>
+          Formular zur Kurswahl für den Eintritt in die Einführungsphase 2026
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📘 Offizielle NRW-Broschüre</div>
+        <div class="result-text" style="font-size:0.88rem;line-height:1.6">
+          <strong>Die gymnasiale Oberstufe an Gymnasien und Gesamtschulen in Nordrhein-Westfalen</strong><br>
+          Ministerium für Schule und Bildung NRW, Oktober 2025<br>
+          <a href="https://gesamtschule-hattingen.de/wp-content/uploads/2026/01/Die-gymnasiale-Oberstufe-an-Gymnasien-und-Gesamtschulen-in-Nordrhein-Westfalen.pdf" target="_blank" rel="noopener" style="color:var(--accent);word-break:break-all">PDF herunterladen</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⚖️ Rechtsgrundlage</div>
+        <div class="result-text" style="font-size:0.88rem;line-height:1.6">
+          <strong>Ausbildungs- und Prüfungsordnung für die gymnasiale Oberstufe (APO-GOSt)</strong><br>
+          vom 5. Oktober 1998, zuletzt geändert 2. April 2025<br>
+          <span style="color:var(--text2);font-family:'DM Mono',monospace;font-size:0.78rem">GV. NRW. 2025 S. 376 · BASS 2025/2026, 13-32 Nr. 3.1</span>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;font-size:0.78rem;color:var(--text2);text-align:center;line-height:1.6">
+        Diese App ersetzt keine individuelle Beratung.<br>
+        Bei Fragen wende dich an deine Oberstufenkoordination.
+      </div>
     </div>
 
   </div><!-- /content -->
@@ -1513,7 +1553,7 @@ addMsg(`<strong>Hallo! 👋</strong><br>
   <span class="tag" data-chip="Was ist die Fachhochschulreife?">FHR</span>`, 'bot');
 
 // Nav-Buttons per EventListener
-[['nav-chat','chat'],['nav-faecher','faecher'],['nav-klausur','klausur'],['nav-rechner','rechner'],['nav-profil','profil']].forEach(([id,sec]) => {
+[['nav-chat','chat'],['nav-faecher','faecher'],['nav-klausur','klausur'],['nav-rechner','rechner'],['nav-profil','profil'],['nav-quellen','quellen']].forEach(([id,sec]) => {
   const btn = document.getElementById(id);
   if (btn) btn.addEventListener('click', () => showSection(sec));
 });
