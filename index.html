@@ -450,6 +450,7 @@ html, body {
   .score-input { border: none !important; border-bottom: 1px solid #666 !important;
     background: transparent !important; color: #000 !important; padding: 4px 2px !important;
     border-radius: 0 !important; font-size: 10pt; }
+  .score-input::placeholder { color: transparent !important; }
   .input-label { color: #444 !important; }
   .print-qr { display: block !important; }
   a { color: #000 !important; text-decoration: none !important; }
@@ -479,7 +480,7 @@ html, body {
         <button class="reset-btn" id="resetBtn" title="Alle Eingaben löschen">↺</button>
       </div>
     </div>
-    <div class="logo-school">Gesamtschule Hattingen <span id="versionTag" style="font-size:0.65rem;opacity:0.5"></span></div>
+    <div class="logo-school">Gesamtschule Hattingen — Einführungsphase 2026 <span id="versionTag" style="font-size:0.65rem;opacity:0.5"></span></div>
   </header>
 
   <div class="nav-wrap" id="navWrap">
@@ -552,7 +553,7 @@ html, body {
         </svg>
         <div class="aw-title-block" style="flex:1;min-width:0">
           <h2 style="margin:0">Meine Auswertung</h2>
-          <p class="aw-subtitle" style="margin:0;font-size:0.8rem;color:var(--text2)">Gesamtschule Hattingen</p>
+          <p class="aw-subtitle" style="margin:0;font-size:0.8rem;color:var(--text2)">Gesamtschule Hattingen — Einführungsphase 2026</p>
           <p>Zusammenfassung aller Eingaben — zum Ausdrucken oder Mitnehmen zur Beratung.</p>
         </div>
         <div class="print-qr-header" id="printQrHeader"></div>
@@ -628,10 +629,10 @@ html, body {
         <div class="card-title">📅 Klausurplan</div>
         <p class="text-muted" style="font-size:0.82rem;margin-bottom:10px">Alle Klausurpflichten auf einen Blick — nach Halbjahr.</p>
         <div class="half-selector">
-          <button class="half-btn active" id="kbtn-EF1">EF.1</button>
-          <button class="half-btn" id="kbtn-EF2">EF.2</button>
-          <button class="half-btn" id="kbtn-Q1">Q1</button>
-          <button class="half-btn" id="kbtn-Q2">Q2</button>
+          <button class="half-btn active" id="kbtn-EF1">Kl.11/1</button>
+          <button class="half-btn" id="kbtn-EF2">Kl.11/2</button>
+          <button class="half-btn" id="kbtn-Q1">Kl.12</button>
+          <button class="half-btn" id="kbtn-Q2">Kl.13</button>
         </div>
         <div class="kl-legend">
           <div class="kl-legend-item"><div class="kl-dot" style="background:var(--red)"></div> Pflicht</div>
@@ -639,9 +640,9 @@ html, body {
         </div>
         <div id="klausurContent"></div>
         <div style="margin-top:12px;font-size:0.82rem;color:var(--text2);line-height:1.6">
-          🔒 Abiturfächer <strong>müssen ab Q1</strong> Klausurfächer sein.<br>
-          📊 EF.2: <strong>Zentrale Klausuren</strong> in Deutsch + Mathe.<br>
-          🗣️ In Fremdsprachen wird eine Q-Klausur durch mündl. Prüfung ersetzt.<br>
+          🔒 Abiturfächer <strong>müssen ab Kl.12</strong> Klausurfächer sein.<br>
+          📊 Kl.11/2: <strong>Zentrale Klausuren</strong> in Deutsch + Mathe.<br>
+          🗣️ In Fremdsprachen wird eine Kl.12/13-Klausur durch mündl. Prüfung ersetzt.<br>
           📝 Max. <strong>3 Klausuren/Woche</strong>, max. 1/Tag.
         </div>
       </div>
@@ -1220,7 +1221,7 @@ function renderResult() {
   });
   html += `</div>`;
   html += `<button class="action-btn" id="restartBtn">↺ Neu starten</button>`;
-  html += `<button class="action-btn secondary" id="toProfilBtn">→ Vollständiger Belegungsplan</button>`;
+  html += `<button class="action-btn secondary" id="toProfilBtn">→ Jetzt weiter zum Belegungsplan</button>`;
   cont.innerHTML = html;
   document.getElementById('restartBtn').addEventListener('click', initFaecher);
   document.getElementById('toProfilBtn').addEventListener('click', () => showSection('profil'));
@@ -1465,34 +1466,34 @@ function calcProfil() {
   }
 
   // Pflichtbelegungen aufbauen
-  pflicht.push({ fach: 'Deutsch', ef: '✏️ schriftl.', q: '✏️ schriftl.' });
-  pflicht.push({ fach: 'Mathematik', ef: '✏️ schriftl.', q: '✏️ schriftl.' });
-  pflicht.push({ fach: 'Englisch (fortg. FS)', ef: '✏️ schriftl.', q: schwerpunkt === 'sprache' ? '✏️ schriftl.' : '✏️ schriftl.' });
+  pflicht.push({ fach: 'Deutsch', ef: '🔴 schriftl.', q: '🔴 schriftl.' });
+  pflicht.push({ fach: 'Mathematik', ef: '🔴 schriftl.', q: '🔴 schriftl.' });
+  pflicht.push({ fach: 'Englisch (fortg. FS)', ef: '🔴 schriftl.', q: schwerpunkt === 'sprache' ? '🔴 schriftl.' : '🔴 schriftl.' });
 
-  if (fs2 === 'ital') pflicht.push({ fach: 'Italienisch', ef: '✏️ schriftl.', q: '✏️ durchgehend Pflicht!' });
-  if (fs2 === 'franz') pflicht.push({ fach: 'Französisch', ef: '✏️ bis EF-Ende', q: schwerpunkt === 'sprache' ? '✏️ weiter (Schwerpunkt)' : '📌 kann abgewählt werden' });
-  if (fs2 === 'latein') pflicht.push({ fach: 'Latein', ef: '📌 bis EF-Ende', q: '➕ freiwillig (→ Latinum)' });
-  if (fs2 === 'nein') pflicht.push({ fach: '⚠️ Neue FS (4-stündig)', ef: '✏️ Pflicht', q: '✏️ bis Abitur' });
+  if (fs2 === 'ital') pflicht.push({ fach: 'Italienisch', ef: '🔴 schriftl.', q: '🔴 durchgehend Pflicht!' });
+  if (fs2 === 'franz') pflicht.push({ fach: 'Französisch', ef: '🔴 bis Kl.11-Ende', q: schwerpunkt === 'sprache' ? '🔴 weiter (Schwerpunkt)' : '🟡 kann abgewählt werden' });
+  if (fs2 === 'latein') pflicht.push({ fach: 'Latein', ef: '🟡 bis Kl.11-Ende', q: '⚪ freiwillig (→ Latinum)' });
+  if (fs2 === 'nein') pflicht.push({ fach: '⚠️ Neue FS (4-stündig)', ef: '🔴 Pflicht', q: '🔴 bis Abitur' });
 
-  pflicht.push({ fach: 'Geschichte oder SoWi', ef: '✏️ mind. 1 davon', q: '📌 nach Bedarf' });
-  pflicht.push({ fach: 'Eine Naturwiss. (Bio/Chemie/Physik)', ef: '✏️ schriftl.', q: schwerpunkt === 'sprache' ? '📌 Klausurpflicht entfällt bei 2 FS' : '✏️ schriftl.' });
+  pflicht.push({ fach: 'Geschichte oder SoWi', ef: '🔴 mind. 1 davon', q: '🟡 nach Bedarf' });
+  pflicht.push({ fach: 'Eine Naturwiss. (Bio/Chemie/Physik)', ef: '🔴 schriftl.', q: schwerpunkt === 'sprache' ? '🟡 Klausurpflicht entfällt bei 2 FS' : '🔴 schriftl.' });
 
   if (schwerpunkt === 'mint' && mint2) {
     const mintMap = { bio: 'Biologie', chemie: 'Chemie', physik: 'Physik', informatik: 'Informatik' };
-    pflicht.push({ fach: `2. MINT: ${mintMap[mint2] || mint2}`, ef: '✏️ schriftl.', q: '✏️ durchgehend' });
+    pflicht.push({ fach: `2. MINT: ${mintMap[mint2] || mint2}`, ef: '🔴 schriftl.', q: '🔴 durchgehend' });
   }
   if (schwerpunkt === 'sprache') {
-    pflicht.push({ fach: '2. Fremdsprache (Schwerpunkt)', ef: '✏️ schriftl.', q: '✏️ durchgehend' });
+    pflicht.push({ fach: '2. Fremdsprache (Schwerpunkt)', ef: '🔴 schriftl.', q: '🔴 durchgehend' });
   }
 
-  pflicht.push({ fach: 'Kunst oder Musik', ef: '📌', q: '📌 mind. bis Q1-Ende' });
-  pflicht.push({ fach: 'Religion / Philosophie', ef: '📌', q: '📌 mind. bis Q1-Ende' });
-  pflicht.push({ fach: 'Sport', ef: '📌', q: '📌 durchgehend' });
-  pflicht.push({ fach: 'Vertiefung Deutsch (GeSHat)', ef: '📌 1 HJ', q: '' });
-  pflicht.push({ fach: 'Vertiefung Mathe (GeSHat)', ef: '📌 1 HJ', q: '' });
+  pflicht.push({ fach: 'Kunst oder Musik', ef: '🟡', q: '🟡 mind. bis Kl.12-Ende' });
+  pflicht.push({ fach: 'Religion / Philosophie', ef: '🟡', q: '🟡 mind. bis Kl.12-Ende' });
+  pflicht.push({ fach: 'Sport', ef: '🟡', q: '🟡 durchgehend' });
+  pflicht.push({ fach: 'Vertiefung Deutsch (GeSHat)', ef: '🟡 1 HJ', q: '' });
+  pflicht.push({ fach: 'Vertiefung Mathe (GeSHat)', ef: '🟡 1 HJ', q: '' });
 
-  if (inferd === 'erdkunde') empfehlungen.push('➕ Erdkunde als Zusatz wählbar (keine Pflicht, kein AF-Erfüller)');
-  if (inferd === 'informatik') empfehlungen.push('➕ Informatik als Zusatz wählbar (kein AF-Erfüller)');
+  if (inferd === 'erdkunde') empfehlungen.push('⚪ Erdkunde als Zusatz wählbar (keine Pflicht, kein AF-Erfüller)');
+  if (inferd === 'informatik') empfehlungen.push('⚪ Informatik als Zusatz wählbar (kein AF-Erfüller)');
 
   // Ergebnis rendern
   const res = document.getElementById('profilResult');
@@ -1518,7 +1519,7 @@ function calcProfil() {
   html += `<div class="card" style="margin-top:14px">
     <div class="card-title">📋 Dein Belegungsplan</div>
     <div style="font-size:0.75rem;color:var(--text2);margin-bottom:10px;font-family:'DM Mono',monospace">
-      ✏️ schriftl. = Klausurpflicht &nbsp;|&nbsp; 📌 = Pflicht ohne Klausur &nbsp;|&nbsp; ➕ = Optional
+      🔴 = Klausurpflicht &nbsp;|&nbsp; 🟡 = Pflicht ohne Klausur &nbsp;|&nbsp; ⚪ = Optional
     </div>`;
 
   pflicht.forEach(p => {
@@ -1527,8 +1528,8 @@ function calcProfil() {
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px">
           <strong>${p.fach}</strong>
           <div style="display:flex;gap:8px;font-size:0.75rem;font-family:'DM Mono',monospace">
-            ${p.ef ? `<span style="color:var(--text2)">EF: ${p.ef}</span>` : ''}
-            ${p.q ? `<span style="color:var(--accent)">Q: ${p.q}</span>` : ''}
+            ${p.ef ? `<span style="color:var(--text2)">Kl.11: ${p.ef}</span>` : ''}
+            ${p.q ? `<span style="color:var(--accent)">Kl.12/13: ${p.q}</span>` : ''}
           </div>
         </div>
       </div>
@@ -1571,7 +1572,12 @@ function calcProfil() {
     ${abiFaecher.length < 4 ? '<div style="font-size:0.78rem;color:var(--text2);margin-top:8px">Noch nicht alle 4 Abiturfächer gewählt.</div>' : ''}
   </div>`;
 
+  if (afIHit && afIIHit && afIIIHit && warnungen.length === 0) {
+    html += `<button class="action-btn secondary" id="toAuswertungBtn" style="margin-top:16px">→ Jetzt weiter zur Auswertung</button>`;
+  }
   res.innerHTML = html;
+  const toAwBtn = document.getElementById('toAuswertungBtn');
+  if (toAwBtn) toAwBtn.addEventListener('click', () => showSection('auswertung'));
   res.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -1580,7 +1586,7 @@ function calcProfil() {
 // ============================================================
 const KLAUSUR_DATA = {
   EF1: {
-    title: 'Einführungsphase — 1. Halbjahr',
+    title: 'Klasse 11 — 1. Halbjahr (Einführungsphase)',
     sub: 'Je Klausurfach: 2 Klausuren, je 90 Min.',
     items: [
       { fach: 'Deutsch', info: '2 Klausuren · 90 Min.', typ: 'pflicht' },
@@ -1592,7 +1598,7 @@ const KLAUSUR_DATA = {
     ]
   },
   EF2: {
-    title: 'Einführungsphase — 2. Halbjahr',
+    title: 'Klasse 11 — 2. Halbjahr (Einführungsphase)',
     sub: '⭐ Zentrale Klausuren: Deutsch 1. Juni · Mathe 4. Juni 2026',
     items: [
       { fach: 'Deutsch', info: '2. Klausur ZENTRAL (1. Juni 2026) · 90 Min.', typ: 'pflicht' },
@@ -1604,7 +1610,7 @@ const KLAUSUR_DATA = {
     ]
   },
   Q1: {
-    title: 'Qualifikationsphase — Q1 (je Halbjahr)',
+    title: 'Klasse 12 — Qualifikationsphase 1 (je Halbjahr)',
     sub: 'LK: 5 Std./Wo · GK: 3 Std./Wo',
     items: [
       { fach: '1. Leistungskurs', info: '2 Klausuren · 135–180 Min.', typ: 'pflicht' },
@@ -1617,7 +1623,7 @@ const KLAUSUR_DATA = {
     ]
   },
   Q2: {
-    title: 'Qualifikationsphase — Q2',
+    title: 'Klasse 13 — Qualifikationsphase 2 (Abiturjahr)',
     sub: 'Q2.2: Nur Vorabitur-Klausuren im 1.–3. Fach!',
     items: [
       { fach: '1./2. LK (Q2.1)', info: '2 Klausuren · 225 Min.', typ: 'pflicht' },
@@ -1722,7 +1728,8 @@ showKlausur('EF1');
 addMsg(`<strong>Hallo! 👋</strong><br>
   Ich bin dein OberStufenCoach — speziell für die <strong>Gesamtschule Hattingen (GeSHat)</strong>.<br><br>
   💡 <strong>Du weißt schon, was du wählen willst?</strong> Dann geh direkt zum Tab <strong>„Belegung"</strong> — dort bekommst du deinen Belegungsplan mit Konflikt-Check.<br>
-  🤔 <strong>Noch unsicher?</strong> Starte im Tab <strong>„Fächer"</strong> — dort wirst du Schritt für Schritt zur passenden Empfehlung geführt.<br><br>
+  🤔 <strong>Noch unsicher?</strong> Starte im Tab <strong>„Fächer"</strong> — dort wirst du Schritt für Schritt zur passenden Empfehlung geführt.<br>
+  🛠️ Unter <strong>„Werkzeuge"</strong> findest du den <strong>Klausurplan</strong> und den <strong>Abiturnoten-Rechner</strong>.<br><br>
   Oder klick hier ein Thema:<br>
   <span class="tag" data-chip="Welche Fächer sind Pflicht?">Pflichtfächer</span>
   <span class="tag" data-chip="Was ist der Schwerpunkt?">Schwerpunkt</span>
@@ -1777,6 +1784,16 @@ function renderAuswertung() {
   const cont = document.getElementById('auswertungContent');
   let html = '';
   const datum = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+  // Hinweis wenn noch nichts erfasst
+  const pFS2check = document.getElementById('p_fs2');
+  const hasFaecher = Object.keys(answers).length > 0;
+  const hasBelegung = pFS2check && pFS2check.value;
+  if (!hasFaecher && !hasBelegung) {
+    html += `<div class="card" style="background:var(--gold);color:#0f1117;text-align:center;padding:20px;font-weight:600;font-size:0.95rem">
+      📋 Noch keine Daten erfasst!<br><span style="font-weight:400;font-size:0.85rem">Fülle zuerst den Tab <strong>„Fächer"</strong> oder <strong>„Belegung"</strong> aus — danach erscheint hier deine Auswertung.</span>
+    </div>`;
+  }
 
   // 1) Fächerwahl — gekürzte Labels
   const shortLabels = {
