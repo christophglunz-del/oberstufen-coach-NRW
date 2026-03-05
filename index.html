@@ -417,9 +417,12 @@ html, body {
 
 /* PRINT */
 @media print {
+  :root { --bg: #fff; --bg2: #fff; --bg3: #f5f5f5; --card: #fff; --border: #ccc; --text: #000; --text2: #444; --gold: #b8860b; }
+  * { background-color: transparent !important; }
   body { background: #fff !important; color: #000 !important; font-size: 11pt; }
-  .content { overflow: visible !important; height: auto !important; padding: 0 !important; }
-  #app { display: block !important; overflow: visible !important; height: auto !important; }
+  .content { overflow: visible !important; height: auto !important; padding: 0 !important; background: #fff !important; }
+  #app { display: block !important; overflow: visible !important; height: auto !important; background: #fff !important; }
+  #section-auswertung { background: #fff !important; }
   .header, .nav, .quick-chips, .chat-input-area, .reset-btn,
   .action-btn, .toast, .section-head p { display: none !important; }
   .section { display: none !important; }
