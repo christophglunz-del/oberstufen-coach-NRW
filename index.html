@@ -682,6 +682,10 @@ html, body {
 </div><!-- /app -->
 
 <div class="toast" id="toast"></div>
+<div id="updateBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--gold);color:#0f1117;padding:12px 16px;font-size:0.9rem;font-weight:600;align-items:center;justify-content:center;gap:10px;z-index:9999;font-family:'Instrument Sans',sans-serif">
+  🔄 Neue Version verfügbar
+  <button onclick="navigator.serviceWorker.controller&&navigator.serviceWorker.controller.postMessage('skipWaiting')||location.reload()" style="background:#0f1117;color:var(--gold);border:none;padding:6px 14px;border-radius:8px;font-weight:600;font-size:0.85rem;cursor:pointer;font-family:inherit">Jetzt aktualisieren</button>
+</div>
 
 <script>
 // ============================================================
@@ -721,7 +725,18 @@ function toggleInfo(id) {
 // SERVICE WORKER
 // ============================================================
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js');
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    reg.addEventListener('updatefound', () => {
+      const nw = reg.installing;
+      if (!nw) return;
+      nw.addEventListener('statechange', () => {
+        if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+          document.getElementById('updateBanner').style.display = 'flex';
+        }
+      });
+    });
+  });
+  navigator.serviceWorker.addEventListener('controllerchange', () => location.reload());
 }
 window.addEventListener('offline', () => showToast('📴 Offline — App funktioniert weiter!'));
 window.addEventListener('online', () => showToast('🌐 Wieder online'));

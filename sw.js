@@ -1,4 +1,4 @@
-const CACHE_NAME = 'oscoach-v1';
+const CACHE_NAME = 'oscoach-v2';
 const ASSETS = ['./', './index.html'];
 
 self.addEventListener('install', e => {
@@ -15,6 +15,14 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request).catch(() => caches.match('./')))
+    fetch(e.request).then(res => {
+      const clone = res.clone();
+      caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+      return res;
+    }).catch(() => caches.match(e.request).then(c => c || caches.match('./')))
   );
+});
+
+self.addEventListener('message', e => {
+  if (e.data === 'skipWaiting') self.skipWaiting();
 });
