@@ -158,7 +158,7 @@ html, body {
 .print-qr-header { display: none; }
 
 /* CHAT */
-.chat-wrap { display: flex; flex-direction: column; height: calc(100dvh - 175px); }
+.chat-wrap { display: flex; flex-direction: column; height: calc(100dvh - 130px); }
 .chat-messages {
   flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
   padding: 4px 0 12px;
@@ -517,7 +517,7 @@ html, body {
 
   <div class="nav-wrap" id="navWrap">
     <nav class="nav" id="navBar">
-      <button class="nav-btn active" id="nav-chat">💬 Chat</button>
+      <button class="nav-btn active" id="nav-chat">❓ FAQ</button>
       <button class="nav-btn" id="nav-faecher">📚 Fächer</button>
       <button class="nav-btn" id="nav-profil">🗂️ Belegung</button>
       <button class="nav-btn" id="nav-auswertung">🖨️ Auswertung</button>
@@ -544,7 +544,7 @@ html, body {
           <div class="chip" data-chip="Was ist die Fachhochschulreife?">Fachhochschulreife</div>
           <div class="chip" data-chip="Was ist das Latinum?">Latinum</div>
         </div>
-        <div class="chat-input-area">
+        <div class="chat-input-area" style="display:none">
           <div class="chat-input-row">
             <textarea class="chat-input" id="chatInput" placeholder="Deine Frage zur Oberstufe..." rows="1"
               onkeydown="handleKey(event)"></textarea>
@@ -784,7 +784,7 @@ html, body {
 </div>
 
 <script>
-const APP_VERSION = '1.7.2';
+const APP_VERSION = '1.7.3';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 
 // ============================================================
