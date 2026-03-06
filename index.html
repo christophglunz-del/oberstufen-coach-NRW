@@ -67,6 +67,26 @@ html, body {
 }
 .reset-btn:hover { border-color: var(--red); color: var(--red); background: rgba(232,91,91,0.1); }
 
+/* Ko-fi Button */
+.kofi-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 20px;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: #0f1117; font-family: 'Syne', sans-serif; font-weight: 700;
+  font-size: 0.78rem; text-decoration: none; letter-spacing: 0.01em;
+  border: none; cursor: pointer; transition: all 0.25s;
+  white-space: nowrap;
+}
+.kofi-btn:hover { filter: brightness(1.1); transform: scale(1.04); }
+.kofi-btn-sm {
+  width: 34px; height: 34px; padding: 0; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: #0f1117; font-size: 1rem; display: flex; align-items: center;
+  justify-content: center; text-decoration: none; border: 1px solid rgba(232,197,71,0.3);
+  transition: all 0.25s; flex-shrink: 0;
+}
+.kofi-btn-sm:hover { filter: brightness(1.1); transform: scale(1.08); }
+
 /* NAV */
 .nav-wrap {
   position: relative;
@@ -488,7 +508,7 @@ html, body {
       <div class="header-btns">
         <button class="reset-btn" id="shareBtn" title="App teilen">🔗</button>
         <a href="mailto:christoph@glunz.org?subject=OberStufenCoach%20NRW%20—%20Verbesserungsvorschlag" class="reset-btn" title="Verbesserungsvorschlag senden" style="text-decoration:none;font-size:1rem">💡</a>
-        <a href="https://ko-fi.com/kriglu" target="_blank" rel="noopener" class="reset-btn" title="Projekt unterstützen" style="text-decoration:none;font-size:1rem">☕</a>
+        <a href="https://ko-fi.com/kriglu" target="_blank" rel="noopener" class="kofi-btn-sm" title="Projekt unterstützen">☕</a>
         <button class="reset-btn" id="resetBtn" title="Alle Eingaben löschen">↺</button>
       </div>
     </div>
@@ -620,10 +640,17 @@ html, body {
         </div>
       </div>
 
-      <div style="margin-top:20px;font-size:0.78rem;color:var(--text2);text-align:center;line-height:1.6">
-        Diese App ersetzt keine individuelle Beratung.<br>
-        Bei Fragen wende dich an deine Oberstufenkoordination.<br><br>
-        <a href="https://ko-fi.com/kriglu" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none">Dieses Projekt unterstützen auf Ko-fi</a>
+      <div class="card" style="margin-top:16px;text-align:center">
+        <div class="card-title">💡 Über dieses Projekt</div>
+        <div class="result-text" style="font-size:0.85rem;line-height:1.7;color:var(--text2)">
+          Der <strong style="color:var(--text)">OberStufenCoach NRW</strong> wurde entwickelt, um Schülerinnen und Schülern der Gesamtschule Hattingen den Einstieg in die Oberstufe zu erleichtern — von der Fächerwahl über die Klausurplanung bis zur Abiturnoten-Simulation.<br><br>
+          Die App ist <strong style="color:var(--text)">kostenlos, werbefrei und funktioniert komplett offline</strong> — auch ohne Internet, direkt auf deinem Handy.<br><br>
+          Sie ersetzt keine individuelle Beratung. Bei Fragen wende dich an deine Oberstufenkoordination.<br><br>
+          <span style="font-size:0.78rem;color:var(--text2)">Entwickelt mit ☕ und Herzblut von Christoph Glunz.</span>
+        </div>
+        <div style="margin-top:16px">
+          <a href="https://ko-fi.com/kriglu" target="_blank" rel="noopener" class="kofi-btn">☕ Projekt unterstützen auf Ko-fi</a>
+        </div>
       </div>
 
     </div>
@@ -757,7 +784,7 @@ html, body {
 </div>
 
 <script>
-const APP_VERSION = '1.6.2';
+const APP_VERSION = '1.7.0';
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 
 // ============================================================
