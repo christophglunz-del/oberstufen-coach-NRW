@@ -957,7 +957,7 @@ const KB = [
       → Muss bis Abitur durchgehalten werden<br><br>
       <strong>GeSHat-Regeln:</strong><br>
       🇮🇹 Italienisch ab Kl. 6 → durchgängig Sek II (außer Frz. ab Kl. 10)<br>
-      🇫🇷 Französisch ab Kl. 7 → bis Ende EF Pflicht<br>
+      🇫🇷 Französisch ab Kl. 7 → nicht in der Oberstufe wählbar (nur für ab Kl. 9)<br>
       🏛️ Latein → bis Ende EF, danach freiwillig`
   },
   {
@@ -966,7 +966,7 @@ const KB = [
       ❌ <strong>Informatik und Erdkunde schließen sich aus!</strong><br>
       → Du kannst nur eines von beiden belegen<br><br>
       🇮🇹 Italienisch ab Kl. 6 → durchgängig bis Abitur<br>
-      🇫🇷 Französisch ab Kl. 7 → mind. bis Ende EF<br>
+      🇫🇷 Französisch ab Kl. 7 → nicht in Oberstufe wählbar (nur für ab Kl. 9)<br>
       🏛️ Latein → bis Ende EF Pflicht, danach freiwillig<br><br>
       📝 Vertiefungskurse: je 1 HJ Deutsch + Mathe (Pflicht)<br>
       ⚠️ Vertiefungsfächer zählen NICHT zur Gesamtqualifikation!<br><br>
@@ -1290,7 +1290,7 @@ function buildRecommendation() {
   if (a.sek1fs2 === 'nein') {
     items.push({ badge: 'PFLICHT', cls: 'badge-muss', title: 'Neue Fremdsprache in EF nötig!', desc: 'Ohne zweite FS aus Sek I musst du in der EF eine neu einsetzende Fremdsprache beginnen (4-stündig, bis Abitur, kein LK möglich).' });
   } else if (a.sek1fs2 === 'franz') {
-    items.push({ badge: 'HINWEIS', cls: 'badge-soll', title: 'Französisch: Bis Ende EF Pflicht', desc: 'Französisch (ab Kl. 7) muss bis Ende der EF belegt werden. Ab Q1 kannst du es abwählen — es sei denn, du brauchst es für den sprachlichen Schwerpunkt.' });
+    items.push({ badge: 'HINWEIS', cls: 'badge-soll', title: 'Französisch ab Kl. 7: Nicht in der Oberstufe wählbar!', desc: 'An der GeSHat wird Französisch in der Oberstufe nur für Schüler*innen ab Kl. 9 angeboten. Mit Französisch ab Kl. 7 (4 Jahre Sek I) ist deine Fremdsprachenpflicht aber bereits erfüllt. Du brauchst nur noch Englisch weiterzuführen.' });
   } else if (a.sek1fs2 === 'ital') {
     items.push({ badge: 'PFLICHT', cls: 'badge-muss', title: 'Italienisch: Durchgängig bis Abitur!', desc: 'Italienisch (ab Kl. 6) muss an der GeSHat die gesamte Sek II durchgehalten werden — außer du hast Französisch ab Kl. 10 gewählt.' });
   } else if (a.sek1fs2 === 'latein') {
@@ -1514,7 +1514,7 @@ function calcProfil() {
   pflicht.push({ fach: 'Englisch (fortg. FS)', ef: '🔴 schriftl.', q: schwerpunkt === 'sprache' ? '🔴 schriftl.' : '🔴 schriftl.' });
 
   if (fs2 === 'ital') pflicht.push({ fach: 'Italienisch', ef: '🔴 schriftl.', q: '🔴 durchgehend Pflicht!' });
-  if (fs2 === 'franz') pflicht.push({ fach: 'Französisch', ef: '🔴 bis Kl.11-Ende', q: schwerpunkt === 'sprache' ? '🔴 weiter (Schwerpunkt)' : '🟡 kann abgewählt werden' });
+  if (fs2 === 'franz') pflicht.push({ fach: 'Französisch', ef: '❌ nicht wählbar (nur ab Kl. 9)', q: '❌ nicht angeboten' });
   if (fs2 === 'latein') pflicht.push({ fach: 'Latein', ef: '🟡 bis Kl.11-Ende', q: '⚪ freiwillig (→ Latinum)' });
   if (fs2 === 'nein') pflicht.push({ fach: '⚠️ Neue FS (4-stündig)', ef: '🔴 Pflicht', q: '🔴 bis Abitur' });
 
@@ -1931,7 +1931,7 @@ function renderAuswertung() {
     awPflicht.push({ fach: 'Mathematik', ef: '🔴 schriftl.', q: '🔴 schriftl.' });
     awPflicht.push({ fach: 'Englisch (fortg. FS)', ef: '🔴 schriftl.', q: '🔴 schriftl.' });
     if (awFs2 === 'ital') awPflicht.push({ fach: 'Italienisch', ef: '🔴 schriftl.', q: '🔴 durchgehend Pflicht!' });
-    if (awFs2 === 'franz') awPflicht.push({ fach: 'Französisch', ef: '🔴 bis Kl.11-Ende', q: awSchwerpunkt === 'sprache' ? '🔴 weiter (Schwerpunkt)' : '🟡 kann abgewählt werden' });
+    if (awFs2 === 'franz') awPflicht.push({ fach: 'Französisch', ef: '❌ nicht wählbar (nur ab Kl. 9)', q: '❌ nicht angeboten' });
     if (awFs2 === 'latein') awPflicht.push({ fach: 'Latein', ef: '🟡 bis Kl.11-Ende', q: '⚪ freiwillig (→ Latinum)' });
     if (awFs2 === 'nein') awPflicht.push({ fach: '⚠️ Neue FS (4-stündig)', ef: '🔴 Pflicht', q: '🔴 bis Abitur' });
     awPflicht.push({ fach: 'Geschichte oder SoWi', ef: '🔴 mind. 1 davon', q: '🟡 nach Bedarf' });
